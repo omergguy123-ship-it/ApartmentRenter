@@ -27,20 +27,21 @@
             tools:layout_editor_absoluteY="16dp" />
 
         <EditText
-            android:id="@+id/emailInput"
+            android:id="@+id/emailInputLogin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Email"
             android:inputType="textEmailAddress"
-            android:marginBottom="16dp" />
+            android:layout_marginBottom="16dp"
+            />
 
         <EditText
-            android:id="@+id/passwordInput"
+            android:id="@+id/passwordInputLogin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Password"
             android:inputType="textPassword"
-            android:marginBottom="24dp" />
+            android:layout_marginBottom="24dp" />
 
         <Button
             android:id="@+id/loginBtn"
