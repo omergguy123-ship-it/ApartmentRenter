@@ -56,6 +56,7 @@ public class SignUp extends AppCompatActivity {
                 lastname = LastNameInput.getText().toString();
                 email = EmailInput.getText().toString();
                 password = PasswordInput.getText().toString();
+
                 mAuth.createUserWithEmailAndPassword(email, password)
                         .addOnCompleteListener(SignUp.this, new OnCompleteListener<AuthResult>() {
                             @Override
