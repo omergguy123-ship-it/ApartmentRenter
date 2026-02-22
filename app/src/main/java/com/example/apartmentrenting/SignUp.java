@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -18,6 +19,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 //import com.google.firebase.auth.UserInfo;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.auth.User;
 import com.google.android.gms.tasks.Task;
@@ -82,6 +84,14 @@ public class SignUp extends AppCompatActivity {
     public void UploadToDB (String UserID,UserInfo NewUser){
 
         user.put(UserID,NewUser);
-        db.collection("users").add(user);
+        db.collection("users").add(user)
+                .addOnCompleteListener(SignUp.this, new OnCompleteListener<DocumentReference>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentReference> task) {
+                if (task.isSuccessful()) {
+                    Toast.makeText(SignUp.this,"User created", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
     }
 }
