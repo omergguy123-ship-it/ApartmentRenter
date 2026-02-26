@@ -5,6 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="24dp"
     tools:context=".SignUp">
 
     <LinearLayout
@@ -12,51 +13,58 @@
         android:layout_height="match_parent"
         android:gravity="top"
         android:orientation="vertical"
-        android:padding="24dp"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/SignUpTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="16dp"
             android:text="Sign up as a new user"
-            android:textSize="20sp" />
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:textAlignment="center"
+            android:lineSpacingExtra="6dp"
+            android:paddingBottom="24dp"
+            android:textColor="@android:color/black" />
 
         <EditText
             android:id="@+id/firstNameInput"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="56dp"
             android:hint="First Name"
             android:inputType="textPersonName" />
 
         <EditText
             android:id="@+id/lastNameInput"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="56dp"
             android:hint="Last Name"
             android:inputType="textPersonName" />
 
         <EditText
             android:id="@+id/emailInput"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="56dp"
             android:hint="Email"
             android:inputType="textEmailAddress" />
 
         <EditText
             android:id="@+id/passwordInput"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="56dp"
             android:hint="Password"
             android:inputType="textPassword" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/signUpBtn"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="56dp"
             android:layout_marginTop="16dp"
-            android:text="Sign Up" />
+            android:text="Sign Up"
+            android:textSize="16sp"
+            android:backgroundTint="#0D9488"
+            android:textColor="@android:color/white"
+            app:cornerRadius="12dp" />
 
         <ImageView
             android:id="@+id/imageView"

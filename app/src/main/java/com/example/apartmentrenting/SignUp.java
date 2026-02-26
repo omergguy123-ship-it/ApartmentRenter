@@ -1,5 +1,7 @@
 package com.example.apartmentrenting;
 
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -15,6 +17,8 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.StartupTime;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -26,6 +30,7 @@ import com.google.android.gms.tasks.Task;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class SignUp extends AppCompatActivity {
     EditText FirstNameInput,LastNameInput,EmailInput,PasswordInput;
@@ -35,6 +40,7 @@ public class SignUp extends AppCompatActivity {
     FirebaseFirestore db;
     Map<String, Object> user;
     private FirebaseAuth mAuth;
+    Intent finishsignup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,16 +55,22 @@ public class SignUp extends AppCompatActivity {
         //write UpdateUI
         SignUpBtn = findViewById(R.id.signUpBtn);
         db = FirebaseFirestore.getInstance();
+        finishsignup = new Intent(SignUp.this,SignIn.class);
 
 
         SignUpBtn.setOnClickListener(new View.OnClickListener() {
+
+
             @Override
             public void onClick(View v) {
+
                 name = FirstNameInput.getText().toString();
                 lastname = LastNameInput.getText().toString();
                 email = EmailInput.getText().toString();
                 password = PasswordInput.getText().toString();
-                mAuth.createUserWithEmailAndPassword(email, password)
+                if ((!Objects.equals(name, ""))&&(!Objects.equals(lastname, ""))&&(!Objects.equals(email, "")&&(!Objects.equals(password, ""))))
+                    {
+                        mAuth.createUserWithEmailAndPassword(email, password)
                         .addOnCompleteListener(SignUp.this, new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
@@ -70,28 +82,46 @@ public class SignUp extends AppCompatActivity {
 
                                     }
                                     NewUser = new UserInfo(name, lastname, UID);
-                                    UploadToDB(UID, NewUser);
+                                    UploadNewUserToDB(UID, NewUser);
+
+
                                 } else {
                                     // If sign up fails, display a message to the user.
                                 }
+
                             }
                         });
+
+                    }
+                else{
+                    Snackbar.make(v, "Fields cannot remain blank!", Snackbar.LENGTH_SHORT).setBackgroundTint(Color.RED).show();
+                }
+
             }
+
+
         });
 
-        user = new HashMap<>();
-    }
-    public void UploadToDB (String UserID,UserInfo NewUser){
 
+    }
+    public void UploadNewUserToDB (String UserID,UserInfo NewUser){
+        user = new HashMap<>();
         user.put(UserID,NewUser);
+
         db.collection("users").add(user)
                 .addOnCompleteListener(SignUp.this, new OnCompleteListener<DocumentReference>() {
             @Override
             public void onComplete(@NonNull Task<DocumentReference> task) {
                 if (task.isSuccessful()) {
-                    Toast.makeText(SignUp.this,"User created", Toast.LENGTH_LONG).show();
+                    Toast.makeText(SignUp.this,"User Created", Toast.LENGTH_LONG).show();
+                    startActivity(finishsignup);
                 }
+                else{
+                    Toast.makeText(SignUp.this,"Sign Up Failed", Toast.LENGTH_LONG).show();
+                }
+
             }
         });
+
     }
 }
