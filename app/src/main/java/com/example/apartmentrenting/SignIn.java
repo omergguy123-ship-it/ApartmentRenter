@@ -50,6 +50,7 @@ public class SignIn extends AppCompatActivity {
             return;
         }
 
+
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
