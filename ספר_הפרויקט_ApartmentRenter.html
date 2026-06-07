@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>ספר פרויקט - ApartmentRenter</title>
+    <style>
+        body {
+            font-family: "Arial", "David", sans-serif;
+            line-height: 1.6;
+            margin: 40px;
+            color: #0F172A;
+            background-color: #FFFFFF;
+        }
+        h1, h2, h3, h4 {
+            color: #4F46E5;
+            font-family: "Arial", sans-serif;
+        }
+        h1 {
+            border-bottom: 2px solid #4F46E5;
+            padding-bottom: 8px;
+            font-size: 24px;
+            margin-top: 40px;
+        }
+        h2 {
+            font-size: 20px;
+            margin-top: 30px;
+            border-bottom: 1px solid #E2E8F0;
+            padding-bottom: 5px;
+        }
+        h3 {
+            font-size: 16px;
+            color: #0D9488;
+        }
+        p, li {
+            font-size: 14px;
+            text-align: justify;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            margin-bottom: 15px;
+        }
+        th, td {
+            border: 1px solid #CBD5E1;
+            padding: 10px;
+            text-align: right;
+            font-size: 13px;
+        }
+        th {
+            background-color: #F1F5F9;
+            color: #0F172A;
+            font-weight: bold;
+        }
+        .code-block {
+            background-color: #F8FAFC;
+            border-left: 4px solid #4F46E5;
+            font-family: "Courier New", Courier, monospace;
+            padding: 12px;
+            direction: ltr;
+            text-align: left;
+            overflow-x: auto;
+            font-size: 12px;
+            margin: 15px 0;
+        }
+        .page-break {
+            page-break-before: always;
+            margin-top: 50px;
+        }
+        .cover-page {
+            text-align: center;
+            padding-top: 50px;
+            height: 90vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .cover-title {
+            font-size: 36px;
+            color: #4F46E5;
+            font-weight: bold;
+            margin-top: 40px;
+        }
+        .cover-subtitle {
+            font-size: 20px;
+            color: #64748B;
+            margin-top: 10px;
+            margin-bottom: 50px;
+        }
+        .cover-details {
+            margin: 80px auto;
+            font-size: 16px;
+            border: 1px solid #E2E8F0;
+            padding: 20px;
+            width: 60%;
+            background-color: #F8FAFC;
+            border-radius: 12px;
+        }
+        .badge {
+            background-color: #D1FAE5;
+            color: #047857;
+            padding: 3px 8px;
+            font-weight: bold;
+            font-size: 11px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ================= דף שער ================= -->
+    <div class="cover-page">
+        <div>
+            <div style="font-size: 18px; font-weight: bold; color: #64748B;">מדינת ישראל - משרד החינוך</div>
+            <div style="font-size: 14px; color: #94A3B8;">נתיב טכנולוגי - מגמת הנדסת תוכנה (883589)</div>
+            <hr style="border: 0; height: 1px; background: #E2E8F0; margin: 20px 0;">
+        </div>
+        
+        <div>
+            <div class="cover-title">ApartmentRenter</div>
+            <div class="cover-subtitle">מערכת מובייל דו-צדדית לחיפוש, ניהול והשכרת דירות נופש ואירוח</div>
+            <div style="font-size: 16px; font-weight: bold;">פרויקט גמר מעשי - 5 יחידות לימוד</div>
+            <div style="font-size: 14px; color: #64748B; margin-top: 5px;">חלופה: תכנות טלפונים חכמים בסביבת אנדרואיד</div>
+        </div>
+
+        <div class="cover-details">
+            <table style="border: 0; width: 100%;">
+                <tr style="border: 0;"><td style="border: 0; font-weight: bold; width: 40%;">מגיש הפרויקט:</td><td style="border: 0;">עומר [שם משפחה]</td></tr>
+                <tr style="border: 0;"><td style="border: 0; font-weight: bold;">תעודת זהות:</td><td style="border: 0;">[הכנס ת.ז. כאן]</td></tr>
+                <tr style="border: 0;"><td style="border: 0; font-weight: bold;">כיתה:</td><td style="border: 0;">י"ב</td></tr>
+                <tr style="border: 0;"><td style="border: 0; font-weight: bold;">מנחה הפרויקט:</td><td style="border: 0;">[שם המורה/המנחה]</td></tr>
+                <tr style="border: 0;"><td style="border: 0; font-weight: bold;">שם בית הספר:</td><td style="border: 0;">[שם בית הספר]</td></tr>
+                <tr style="border: 0;"><td style="border: 0; font-weight: bold;">תאריך הגשה:</td><td style="border: 0;">יוני 2026</td></tr>
+            </table>
+        </div>
+        
+        <div style="font-size: 12px; color: #94A3B8;">© כל הזכויות שמורות - פרויקט גמר בגרות 2026</div>
+    </div>
+
+    <div class="page-break"></div>
+
+    <!-- ================= 1. טבלת תכולות ================= -->
+    <h1>1. טבלת תכולות הפרויקט</h1>
+    <p>להלן טבלת ריכוז הרכיבים הטכנולוגיים והפונקציונליים שיושמו בפרויקט בפועל, בהתאמה למחוון הבגרות המעודכן (כולל הקלות המלחמה):</p>
+    
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 25%;">סעיף במחוון</th>
+                <th style="width: 30%;">תיאור הדרישה</th>
+                <th style="width: 45%;">מימוש בפרויקט ApartmentRenter</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><b>דרישות יסוד (1-5)</b></td>
+                <td>מערכת אנדרואיד עובדת, שימוש במסכים מרובים (Activities), ממשק משתמש אסתטי ומאזינים לאירועים.</td>
+                <td>מערכת מלאה הכתובה ב-Java עבור אנדרואיד. כוללת 7 מסכים אינטראקטיביים עם מעברים מבוססי Intent, ממשק מבוסס עיצוב Material 3 עם ערכת Midnight Indigo, ומאזיני אירועים לכל כפתורי הממשק.</td>
+            </tr>
+            <tr>
+                <td><b>נושא מתקדם (סעיף 6)</b></td>
+                <td>שימוש באחד מהנושאים: AlarmManager, Service, ContentProvider או ActivityResult החדש.</td>
+                <td>
+                    <b>הפרויקט מממש שני נושאים מסעיף 6:</b><br>
+                    1. <b>ActivityResult בפורמט החדש:</b> שימוש ב-<code>registerForActivityResult</code> לקריאה לגלריית המכשיר והחזרת תמונת נכס ב-UploadHouseActivity, וכן לקבלת הרשאות התראה.<br>
+                    2. <b>AlarmManager + Notification:</b> תזמון התראה מקומית לבעל הנכס לבדיקת הזמנות ממתינות המופעלת ברקע גם כשהאפליקציה סגורה.
+                </td>
+            </tr>
+            <tr>
+                <td><b>אחסון נתונים (סעיף 7)</b></td>
+                <td>שימוש במסד נתונים מקומי או מרוחק לקריאה וכתיבה.</td>
+                <td>שימוש מלא ב-<b>Cloud Firestore</b> כמסד נתונים מרוחק בענן לשמירה וטעינה של משתמשים, נכסים להשכרה והזמנות, לצד <b>Firebase Storage</b> לאחסון קבצי תמונות הנכסים בזמן אמת.</td>
+            </tr>
+            <tr>
+                <td><b>הקלות - נושאי בחירה (סעיף 10)</b></td>
+                <td>לפי ההקלות המעודכנות: נדרש לבחור לפחות 2 נושאים מסעיף 10 (או נושא אחד מסעיף 9).</td>
+                <td>
+                    <b>הפרויקט מיישם 3 נושאים מתקדמים מסעיף 10:</b><br>
+                    1. <b>Camera & Gallery:</b> שימוש בגלריית המערכת לבחירת תמונת דירה והעלאתה לשרת.<br>
+                    2. <b>SharedPreferences:</b> ניהול הגדרות מקומיות ומעקב אחר ניקוי בסיס הנתונים וטעינת נתוני Seed ראשוניים.<br>
+                    3. <b>Broadcast Receiver:</b> מימוש מקלט מותאם אישית (ReminderReceiver) לקליטת אירוע ה-AlarmManager והעלאת התראה למשתמש.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="page-break"></div>
+
+    <!-- ================= 2. מבוא ================= -->
+    <h1>2. מבוא לפרויקט</h1>
+    
+    <h2>2.1 רקע ותיאור כללי</h2>
+    <p>
+        האפליקציה <b>ApartmentRenter</b> היא פלטפורמה מודרנית לשיתוף והשכרת דירות נופש ואירוח לטווח קצר, המבוססת על מודל כלכלי דו-צדדי (אורח ומארח) בדומה לאפליקציות מובילות בעולם כגון Airbnb ו-Booking.com.
+        האפליקציה מאפשרת למשתמשים לחפש דירות נופש וצימרים על פי מיקום, קטגוריות נכסים (וילה, בקתה, דירה, סטודיו) וטווח מחירים, להגיש בקשות הזמנה הכוללות תאריכי הגעה, עזיבה והערה אישית למארח.
+        מצד המארח, האפליקציה מציעה לוח בקרה שלם שבו המארח יכול להציע דירות חדשות להשכרה (כולל העלאת תמונה ישירות מגלריית המכשיר), לנהל את בקשות ההזמנה הממתינות לו (לאשר או לדחות), ולצפות ברשימת ההזמנות המאושרות שלו לניהול שוטף של הלקוחות.
+    </p>
+
+    <h2>2.2 קהל היעד</h2>
+    <p>
+        האפליקציה פונה לשני קהלי יעד עיקריים הפועלים בסביבה אחת:
+    </p>
+    <ul>
+        <li><b>שוכרים ואורחים (Renters):</b> אנשים המחפשים פתרון אירוח נוח וזמין לצרכי חופשה או עבודה, המעוניינים לתקשר ישירות עם המארח ולהציג בפניו את פרטי ובקשות השהות שלהם.</li>
+        <li><b>משכירים ומארחים (Hosts):</b> בעלי דירות או נכסי אירוח המעוניינים לייצר הכנסה נוספת על ידי השכרת חללים פנויים, ומחפשים ממשק נוח לניהול הלקוחות ואישור הבקשות שלהם.</li>
+    </ul>
+
+    <h2>2.3 הסיבות לבחירת הנושא</h2>
+    <p>
+        בחירה בנושא זה נבעה מהרצון להתמודד עם אתגרים פיתוחיים המאפיינים מערכות תוכנה אמיתיות בשוק כיום: עבודה מול שרתי ענן (Firestore & Storage), ניהול הרשאות משתמשים בזמן אמת, סנכרון תהליכי אישור וניהול זרימת נתונים אסינכרונית. נושא זה מקיף מגוון רחב של רכיבי אנדרואיד וחווית משתמש מתקדמת המכינה את התלמיד בצורה הטובה ביותר לתעשיית התוכנה.
+    </p>
+
+    <h2>2.4 סקירת המצב הקיים בשוק ותהליך המחקר</h2>
+    <p>
+        במסגרת המחקר המקדים נבחנו אפליקציות כגון Airbnb ו-Vrbo. הניתוח העלה כי הרכיבים החשובים ביותר למשתמש הם:
+    </p>
+    <ol>
+        <li><b>אינטואיטיביות חיפוש:</b> המשתמש חייב לראות מיד את תוצאות הסינון ללא השהייה. לכן יישמנו סינון דינמי מבוסס <code>TextWatcher</code> וצ'יפים ללא צורך בטעינת מסכים מחדש.</li>
+        <li><b>מניעת שגיאות:</b> באפליקציות רבות משתמשים יכולים לבצע הזמנות כפולות או להזמין את הנכס של עצמם. המערכת שלנו פותרת זאת באופן הרמטי: בעל הנכס מוגבל מלהזמין את הנכס של עצמו (כפתור ההזמנה נחסך ממנו ומתחלף בכפתור "הנכס שלך"), ובחירת התאריכים מוגבלת ללוח שנה מובנה המונע בחירת תאריך יציאה הקודם לתאריך הכניסה.</li>
+    </ol>
+
+    <h2>2.5 אתגרים וחידושים בפרויקט</h2>
+    <ul>
+        <li><b>מנגנון אישור דו-שלבי (Two-sided Approval Flow):</b> בניגוד להזמנה סימולטיבית פשוטה, כאן ההזמנה נרשמת תחילה בסטטוס <code>PENDING</code>. היא מופיעה בלוח הבקרה של המארח בלבד. רק לאחר אישור המארח הסטטוס מתעדכן ל-<code>APPROVED</code> ורק אז היא נחשפת בלוח ההזמנות האישי של השוכר.</li>
+        <li><b>ניהול לקוחות מרוכז (Manage Guests):</b> המארח מקבל אזור ייעודי שבו הוא רואה את כל האורחים שאישר, כולל תאריכי השהות המדויקים וההערות האישיות שלהם.</li>
+        <li><b>שעון תזכורת ברקע (Background Alarm Scheduler):</b> מנגנון המאפשר למשתמש לקבל התראה מקומית שתזכיר לו לבדוק בקשות הזמנה גם אם המכשיר נעול או האפליקציה אינה פועלת.</li>
+    </ul>
+
+    <div class="page-break"></div>
+
+    <!-- ================= 3. מבנה וארכיטקטורה ================= -->
+    <h1>3. מבנה וארכיטקטורה</h1>
+    
+    <h2>3.1 זרימת מסכים (Screen Flow Diagram)</h2>
+    <p>התרשים הבא מתאר את היררכיית המסכים באפליקציה והקשרים ביניהם:</p>
+    <div class="code-block">
+[מסך פתיחה: MainActivity]
+       │ (בדיקת התחברות שמורה)
+       ├───────► משתמש מחובר ───────┐
+       │                            ▼
+[מסך התחברות: SignIn]  ◄────► [מסך הרשמה: SignUp]
+       │                            │
+       └──────────────┬─────────────┘
+                      ▼
+[מסך ראשי וטאבים: BrouseHosesOrUploadListing]
+       │
+       ├─► טאב 1: Explore (עיון וחיפוש דירות)
+       │     └─► [מסך סינון וחיפוש: BrowseHousesActivity]
+       │           └─► [מסך פרטי נכס: HouseDetailActivity]
+       │                 └─► (דיאלוג הזמנה: dialog_booking_request)
+       │
+       ├─► טאב 2: Hosting (ניהול נכסים והזמנות אורחים)
+       │     ├─► [מסך העלאת נכס: UploadHouseActivity] (שימוש בגלריה)
+       │     ├─► רשימת בקשות ממתינות (rvBookingRequests)
+       │     └─► רשימת הזמנות מאושרות (rvConfirmedReservations)
+       │
+       └─► טאב 3: Profile (פרטי משתמש והגדרות)
+             ├─► רשימת הזמנות מאושרות שלי (rvMyBookings)
+             └─► כפתור תזמון תזכורת (AlarmManager + Notification)
+    </div>
+
+    <h2>3.2 פירוט מסכי האפליקציה</h2>
+    
+    <h3>3.2.1 MainActivity (מסך השער והכניסה)</h3>
+    <p>
+        מסך פתיחה המציג את לוגו האפליקציה ומבצע בדיקה אוטומטית מול שרת ה-Firebase: האם קיים משתמש מחובר ב-Cache (באמצעות <code>mAuth.getCurrentUser()</code>).
+        אם כן, האפליקציה מנווטת מיד למסך הבית הראשי ללא צורך בהקלדת פרטים. אם לא, המשתמש מועבר למסך ההתחברות.
+    </p>
+
+    <h3>3.2.2 SignIn ו-SignUp (מסכי הרשמה והתחברות)</h3>
+    <p>
+        מסכים אלו מטפלים באימות משתמשים. מסך ההרשמה דורש שם פרטי, שם משפחה, אימייל וסיסמה. עם ההרשמה נוצר משתמש ב-Firebase Auth ופרופיל משתמש תואם ב-Firestore בנתיב <code>/users/{UID}</code> הכולל שדה <code>isHost = false</code> כברירת מחדל.
+    </p>
+
+    <h3>3.2.3 BrouseHosesOrUploadListing (לוח הבקרה הראשי)</h3>
+    <p>
+        מסך הבית המנהל את שלושת הטאבים הראשיים באמצעות סרגל תחתון מותאם אישית:
+    </p>
+    <ul>
+        <li><b>Explore Tab:</b> מציג כרטיס ניווט למסך הסינון הראשי.</li>
+        <li><b>Hosting Tab:</b> אם המשתמש אינו מארח, מציג מסך מזמין להירשם כמארח. במידה והוא מארח, מציג את רשימת הדירות שלו, אזור לניהול בקשות ממתינות של אורחים עם כפתורי אישור/דחייה, ואזור "הזמנות מאושרות" לניהול האורחים שלו.</li>
+        <li><b>Profile Tab:</b> מציג את שם המשתמש, רשימת ההזמנות המאושרות שלו כנוסע, כפתור התנתקות וכפתור תזמון תזכורת.</li>
+    </ul>
+
+    <h3>3.2.4 BrowseHousesActivity (חיפוש וסינון נכסים)</h3>
+    <p>
+        מסך המציג את כל הדירות הקיימות במערכת. מבוסס על שדה חיפוש המאפשר סינון בזמן אמת לפי כותרת או עיר, וקבוצת צ'יפים (ChipGroup) לסינון מהיר לפי קטגוריית הדירה (וילה, סטודיו, בקתה, דירה).
+    </p>
+
+    <h3>3.2.5 HouseDetailActivity (מסך פרטי נכס)</h3>
+    <p>
+        מציג תמונה גדולה של הנכס, מיקום, דירוג, מספר מיטות ומקלחות, תיאור מלא והפרטים של המארח.
+        במידה והמארח של הנכס הוא המשתמש הנוכחי, המערכת חוסמת את האפשרות להזמין ומציגה כפתור אפור "הנכס שלך". אם המשתמש הוא אורח, לחיצה על "הזמן כעת" פותחת דיאלוג ייעודי (<code>MaterialAlertDialogBuilder</code>) לבחירת תאריכים.
+    </p>
+
+    <h3>3.2.6 UploadHouseActivity (פרסום נכס חדש)</h3>
+    <p>
+        טופס מפורט למארחים להוספת נכס. כולל כותרת, תיאור, מחיר, מיקום, בחירת קטגוריה וצ'יפים לבחירת שירותים (Wifi, AC, חניה, מטבח).
+        בלחיצה על תיבת התמונה, מופעל ActivityResultLauncher החדש המאפשר לבחור תמונה מגלריית המכשיר ומעלה אותה לענן.
+    </p>
+
+    <div class="page-break"></div>
+
+    <!-- ================= 4. מימוש הפרויקט ================= -->
+    <h1>4. מימוש הפרויקט</h1>
+    
+    <h2>4.1 פירוט מחלקות הקוד (Classes)</h2>
+    <p>בפרק זה יתוארו המחלקות המרכזיות, משתניהן העיקריים והפעולות הלוגיות הממומשות בהן.</p>
+
+    <h3>4.1.1 מחלקת המודל: Booking.java</h3>
+    <p>מייצגת ישות של הזמנת דירה בבסיס הנתונים.</p>
+    <ul>
+        <li><b>תכונות (Fields):</b>
+            <ul>
+                <li><code>bookingId</code> (String) - מזהה ייחודי של ההזמנה.</li>
+                <li><code>listingId</code> (String) - מזהה הנכס המוזמן.</li>
+                <li><code>renterUid</code> (String) - מזהה השוכר שהגיש את הבקשה.</li>
+                <li><code>renterName</code> (String) - שם השוכר המלא.</li>
+                <li><code>status</code> (String) - סטטוס ההזמנה (<code>"PENDING"</code>, <code>"APPROVED"</code>, <code>"DECLINED"</code>).</li>
+                <li><code>checkInDate</code> / <code>checkOutDate</code> (String) - תאריכי השהות.</li>
+                <li><code>hostUid</code> (String) - מזהה בעל הדירה (המארח).</li>
+            </ul>
+        </li>
+    </ul>
+
+    <h3>4.1.2 מחלקת לוגיקה וקליטה: ReminderReceiver.java</h3>
+    <p>מחלקה היורשת מ-<code>BroadcastReceiver</code> ואחראית על הצגת התראה (Notification) למשתמש כאשר שעון ה-AlarmManager מופעל.</p>
+    <div class="code-block">
+public class ReminderReceiver extends BroadcastReceiver {
+    private static final String CHANNEL_ID = "apartment_renter_reminders";
+
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        createNotificationChannel(context);
+        
+        Intent clickIntent = new Intent(context, BrouseHosesOrUploadListing.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(
+                context, 0, clickIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+        );
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
+                .setSmallIcon(android.R.drawable.ic_dialog_info)
+                .setContentTitle("ApartmentRenter Reminder")
+                .setContentText("You have active listings and booking requests to manage! Open your Hosting Dashboard.")
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true);
+
+        NotificationManagerCompat.from(context).notify(1001, builder.build());
+    }
+}
+    </div>
+
+    <h3>4.1.3 מניעת הזמנה עצמית ולוח שנה בפרטי נכס: HouseDetailActivity.java</h3>
+    <p>מחלקה זו מנהלת את הדיאלוג לבחירת תאריכים מלוח שנה (DatePicker) ומוודאת שבעל הנכס אינו יכול להזמין את עצמו:</p>
+    <div class="code-block">
+// בדיקת מניעת הזמנה עצמית
+String currentUid = FirebaseAuth.getInstance().getCurrentUser() != null ? 
+        FirebaseAuth.getInstance().getCurrentUser().getUid() : "";
+
+if (!currentUid.isEmpty() && hostUid.equals(currentUid)) {
+    btnBookNow.setEnabled(false);
+    btnBookNow.setText("Your Property");
+    btnBookNow.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#9CA3AF")));
+} else {
+    btnBookNow.setOnClickListener(v -> showBookingRequestDialog(listingId, title, ...));
+}
+
+// קטע קוד לפתיחת לוח שנה (DatePickerDialog)
+etDialogCheckIn.setOnClickListener(v -> {
+    DatePickerDialog datePickerDialog = new DatePickerDialog(this,
+        (view, selectedYear, selectedMonth, selectedDay) -> {
+            String dateStr = String.format(Locale.US, "%d-%02d-%02d", selectedYear, selectedMonth + 1, selectedDay);
+            etDialogCheckIn.setText(dateStr);
+        }, year, month, day);
+    datePickerDialog.show();
+});
+    </div>
+
+    <h2>4.2 מסד הנתונים בענן (Cloud Firestore Schema)</h2>
+    <p>הנתונים באפליקציה מאוחסנים ומסונכרנים בזמן אמת בשרתי Firebase תחת שלוש קולקציות (Collections) ראשיות:</p>
+    
+    <h3>4.2.1 קולקציית משתמשים: users</h3>
+    <p>כל מסמך מייצג משתמש רשום במערכת, כאשר מזהה המסמך (Document ID) הוא ה-UID הייחודי מ-Firebase Auth:</p>
+    <table>
+        <thead>
+            <tr>
+                <th>שם השדה</th>
+                <th>סוג הנתון</th>
+                <th>תפקיד השדה</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>firstName</td>
+                <td>String</td>
+                <td>שם פרטי של המשתמש.</td>
+            </tr>
+            <tr>
+                <td>lastName</td>
+                <td>String</td>
+                <td>שם משפחה של המשתמש.</td>
+            </tr>
+            <tr>
+                <td>email</td>
+                <td>String</td>
+                <td>כתובת האימייל של המשתמש.</td>
+            </tr>
+            <tr>
+                <td>isHost</td>
+                <td>Boolean</td>
+                <td>דגל המציין האם המשתמש נרשם כמארח ומנהל נכסים.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>4.2.2 קולקציית נכסים: listings</h3>
+    <p>כל מסמך מייצג דירה או נכס שהועלה על ידי מארח:</p>
+    <table>
+        <thead>
+            <tr>
+                <th>שם השדה</th>
+                <th>סוג הנתון</th>
+                <th>תפקיד השדה</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>listingId</td>
+                <td>String</td>
+                <td>מזהה ייחודי של הנכס.</td>
+            </tr>
+            <tr>
+                <td>title</td>
+                <td>String</td>
+                <td>כותרת הנכס (למשל: "וילת יוקרה מול הים").</td>
+            </tr>
+            <tr>
+                <td>location</td>
+                <td>String</td>
+                <td>מיקום גיאוגרפי (עיר, מדינה).</td>
+            </tr>
+            <tr>
+                <td>price</td>
+                <td>Double</td>
+                <td>מחיר ללילה בדולרים.</td>
+            </tr>
+            <tr>
+                <td>imageUrl</td>
+                <td>String</td>
+                <td>קישור לתמונת הנכס המאוחסנת ב-Firebase Storage.</td>
+            </tr>
+            <tr>
+                <td>hostUid</td>
+                <td>String</td>
+                <td>מזהה ה-UID של המארח שהעלה את הנכס.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>4.2.3 קולקציית הזמנות: bookings</h3>
+    <p>מנהלת את היסטוריית בקשות ההזמנה והאישורים הדו-צדדיים במערכת:</p>
+    <table>
+        <thead>
+            <tr>
+                <th>שם השדה</th>
+                <th>סוג הנתון</th>
+                <th>תפקיד השדה</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>bookingId</td>
+                <td>String</td>
+                <td>מזהה ייחודי של בקשת ההזמנה.</td>
+            </tr>
+            <tr>
+                <td>renterUid</td>
+                <td>String</td>
+                <td>מזהה ה-UID של האורח המבקש.</td>
+            </tr>
+            <tr>
+                <td>status</td>
+                <td>String</td>
+                <td>סטטוס ההזמנה הנוכחי: <code>PENDING</code>, <code>APPROVED</code>, <code>DECLINED</code>.</td>
+            </tr>
+            <tr>
+                <td>checkInDate / checkOutDate</td>
+                <td>String</td>
+                <td>תאריכי השהות שנבחרו מה-DatePicker.</td>
+            </tr>
+            <tr>
+                <td>note</td>
+                <td>String</td>
+                <td>הודעה מותאמת אישית שכתב האורח לבעל הבית.</td>
+            </tr>
+            <tr>
+                <td>hostUid</td>
+                <td>String</td>
+                <td>מזהה ה-UID של בעל הנכס שאמור לאשר/לדחות את הבקשה.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="page-break"></div>
+
+    <!-- ================= 5. מדריך למשתמש ================= -->
+    <h1>5. מדריך למשתמש</h1>
+    <p>פרק זה מתאר את אופן הפעלת המערכת שלב אחר שלב:</p>
+
+    <h2>5.1 בדיקת המערכת ודרישות</h2>
+    <ul>
+        <li>הפרויקט נבדק בהצלחה על אמולטורים המריצים גרסאות אנדרואיד מגרסת Android 7.0 (API 24) ועד Android 15 (API 35/36).</li>
+        <li>המכשיר מחויב בחיבור אינטרנט פעיל על מנת להתחבר לשרתי Firebase.</li>
+    </ul>
+
+    <h2>5.2 שלבי השימוש באפליקציה</h2>
+    <ol>
+        <li>
+            <b>הרשמה והתחברות:</b><br>
+            בעלייה ראשונה, המשתמש מופנה למסך ההתחברות. במידה ואין לו חשבון, הוא לוחץ על כפתור ההרשמה, מזין שם פרטי, שם משפחה, אימייל וסיסמה.
+        </li>
+        <li>
+            <b>חיפוש דירה:</b><br>
+            בטאב <b>Explore</b>, המשתמש לוחץ על כרטיסיית "Browse Listings" ומגיע למסך החיפוש.
+            המשתמש יכול להקליד מילת חיפוש בתיבת הטקסט (לדוגמה: "Malibu") או ללחוץ על קטגוריה כגון "Villa" - והרשימה תתעדכן מיד.
+        </li>
+        <li>
+            <b>ביצוע הזמנה:</b><br>
+            המשתמש לוחץ על הדירה המבוקשת, מועבר למסך הפרטים ולוחץ על כפתור **Book Now** (במידה והנכס אינו בבעלותו).
+            בלחיצה, ייפתח לוח שנה לבחירת תאריך כניסה ותאריך יציאה, וכן תיבת טקסט להקלדת הערה למארח. בלחיצה על "Send Request" הבקשה נשלחת למארח.
+        </li>
+        <li>
+            <b>ניהול אירוח ואישור בקשות (צד המארח):</b><br>
+            משתמש המעוניין להציע דירה נכנס לטאב **Hosting** ולוחץ על "Become a Host".
+            כעת, נפתח לוח בקרה שלם. המארח יכול ללחוץ על סימון הפלוס (+) כדי להעלות דירה חדשה (כולל בחירת תמונה מהגלריה).
+            בנוסף, תחת כותרת **Incoming Requests** הוא יראה את כל בקשות האורחים הממתינות לאישורו. המארח יכול ללחוץ על **Accept** (אישור) או **Decline** (דחייה).
+        </li>
+        <li>
+            <b>ניהול לקוחות מאושרים:</b><br>
+            ברגע שהמארח אישר בקשה (לחץ על Accept), היא נעלמת מרשימת הבקשות הממתינות ומופיעה מיד תחת רשימת **Confirmed Reservations** המציגה את שמות האורחים, תאריכי השהות וההערות שלהם לניהול נוח.
+        </li>
+        <li>
+            <b>צפייה בהזמנות שלי:</b><br>
+            האורח יכול להיכנס לטאב **Profile** ולראות תחת כותרת **My Bookings** את כל הדירות שהזמנתן אושרה על ידי המארח.
+        </li>
+        <li>
+            <b>תזכורת התראות (AlarmManager):</b><br>
+            בטאב **Profile**, המשתמש יכול ללחוץ על כפתור <b>Schedule Booking Reminder</b>. המערכת תבקש הרשאה להציג התראות במכשיר.
+            לאחר מתן ההרשאה, המערכת תציג הודעת אישור ותזמן התראה ל-10 שניות קדימה. צא מהאפליקציה, ותוך 10 שניות תתקבל התראה דוחפת ישירות לווילון ההתראות של הטלפון.
+        </li>
+    </ol>
+
+    <div class="page-break"></div>
+
+    <!-- ================= 6. רפלקציה וסיכום אישי ================= -->
+    <h1>6. סיכום אישי ורפלקציה</h1>
+    <p>
+        עבודה על פרויקט הגמר <b>ApartmentRenter</b> היוותה עבורי מסע למידה משמעותי, מאתגר ומפתח ביותר לאורך שנת הלימודים האחרונה.
+        במהלך הפיתוח נחשפתי לעקרונות תכנותיים וטכנולוגיים מתקדמים שלא נכללו בתוכנית הלימודים הבסיסית, ולמדתי כיצד לחקור ולפתור בעיות מורכבות באופן עצמאי.
+    </p>
+    <p>
+        האתגר המרכזי שעימו התמודדתי היה הלוגיקה האסינכרונית בעבודה מול מסד הנתונים Cloud Firestore.
+        מאחר שטעינת הנתונים מהענן מתבצעת ברקע, היה עלי להבין לעומק את מנגנון ה-Callback והמאזינים (Listeners) על מנת לוודא שה-Adapters של ה-RecyclerView מתעדכנים בזמן אמת ואינם גורמים לקריסת האפליקציה.
+        התמודדות נוספת הייתה מימוש מנגנון מניעת ההזמנות העצמיות בהתבסס על השוואת מזהי UID בזמן אמת, דבר שדרש דיוק ארכיטקטוני רב במעבר בין מסכים.
+    </p>
+    <p>
+        תהליך הפיתוח העניק לי כלים יקרי ערך להמשך הדרך, כגון שימוש ב-Git לניהול גרסאות, הבנת עקרונות עיצוב מבוססי הנדסת אנוש (UX/UI) וחשיבותה של הפרדת הרשויות בקוד (הפרדה בין מחלקות תצוגה, מודל ולוגיקה).
+        בראייה לאחור, הפרויקט חיזק את היכולת שלי להתמודד עם שגיאות קומפילציה וריצה, ונתן לי ביטחון רב ביכולת הפיתוח העצמאית שלי.
+    </p>
+
+    <div class="page-break"></div>
+
+    <!-- ================= 7. ביבליוגרפיה ================= -->
+    <h1>7. ביבליוגרפיה (לפי כללי APA)</h1>
+    <ol dir="ltr" style="text-align: left;">
+        <li>Android Developers. (2026). <i>Activity Result API</i>. Retrieved from <a href="https://developer.android.com/training/basics/intents/result">https://developer.android.com/training/basics/intents/result</a></li>
+        <li>Android Developers. (2026). <i>AlarmManager and Scheduling alarms</i>. Retrieved from <a href="https://developer.android.com/training/scheduling/alarms">https://developer.android.com/training/scheduling/alarms</a></li>
+        <li>Firebase Documentation. (2026). <i>Get started with Cloud Firestore on Android</i>. Retrieved from <a href="https://firebase.google.com/docs/firestore/quickstart">https://firebase.google.com/docs/firestore/quickstart</a></li>
+        <li>Google Material Design 3. (2026). <i>Material Design guidelines for Android</i>. Retrieved from <a href="https://m3.material.io/">https://m3.material.io/</a></li>
+        <li>Glide Library. (2026). <i>Glide Documentation for Android image loading</i>. Retrieved from <a href="https://github.com/bumptech/glide">https://github.com/bumptech/glide</a></li>
+    </ol>
+
+</body>
+</html>

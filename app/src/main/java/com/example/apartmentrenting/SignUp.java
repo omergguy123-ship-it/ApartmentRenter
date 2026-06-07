@@ -3,125 +3,127 @@ package com.example.apartmentrenting;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.StartupTime;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-//import com.google.firebase.auth.UserInfo;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.auth.User;
-import com.google.android.gms.tasks.Task;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
 
 public class SignUp extends AppCompatActivity {
-    EditText FirstNameInput,LastNameInput,EmailInput,PasswordInput;
-    Button SignUpBtn;
-    UserInfo NewUser;
-    String name, lastname,email,password,UID;
-    FirebaseFirestore db;
-    Map<String, Object> user;
+    private EditText firstNameInput, lastNameInput, emailInput, passwordInput;
+    private Button signUpBtn;
+    private TextView tvAlreadyHaveAccount;
+    private FirebaseFirestore db;
     private FirebaseAuth mAuth;
-    Intent finishsignup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
-        FirstNameInput = findViewById(R.id.firstNameInput);
-        LastNameInput = findViewById(R.id.lastNameInput);
-        EmailInput = findViewById(R.id.emailInput);
-        PasswordInput = findViewById(R.id.passwordInput);
+
+        firstNameInput = findViewById(R.id.firstNameInput);
+        lastNameInput = findViewById(R.id.lastNameInput);
+        emailInput = findViewById(R.id.emailInput);
+        passwordInput = findViewById(R.id.passwordInput);
+        signUpBtn = findViewById(R.id.signUpBtn);
+        tvAlreadyHaveAccount = findViewById(R.id.tvAlreadyHaveAccount);
+
         mAuth = FirebaseAuth.getInstance();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        //write UpdateUI
-        SignUpBtn = findViewById(R.id.signUpBtn);
         db = FirebaseFirestore.getInstance();
-        finishsignup = new Intent(SignUp.this,SignIn.class);
 
-
-        SignUpBtn.setOnClickListener(new View.OnClickListener() {
-
-
+        signUpBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                name = FirstNameInput.getText().toString();
-                lastname = LastNameInput.getText().toString();
-                email = EmailInput.getText().toString();
-                password = PasswordInput.getText().toString();
-                if ((!Objects.equals(name, ""))&&(!Objects.equals(lastname, ""))&&(!Objects.equals(email, "")&&(!Objects.equals(password, ""))))
-                    {
-                        mAuth.createUserWithEmailAndPassword(email, password)
-                        .addOnCompleteListener(SignUp.this, new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                if (task.isSuccessful()) {
-                                    // Sign up success, get the UID
-                                    FirebaseUser firebaseUser = mAuth.getCurrentUser();
-                                    if (firebaseUser != null) {
-                                        UID = firebaseUser.getUid();
-
-                                    }
-                                    NewUser = new UserInfo(name, lastname, UID);
-                                    UploadNewUserToDB(UID, NewUser);
-
-
-                                } else {
-                                    // If sign up fails, display a message to the user.
-                                }
-
-                            }
-                        });
-
-                    }
-                else{
-                    Snackbar.make(v, "Fields cannot remain blank!", Snackbar.LENGTH_SHORT).setBackgroundTint(Color.RED).show();
-                }
-
+                performSignUp(v);
             }
-
-
         });
 
-
-    }
-    public void UploadNewUserToDB (String UserID,UserInfo NewUser){
-        user = new HashMap<>();
-        user.put(UserID,NewUser);
-
-        db.collection("users").add(user)
-                .addOnCompleteListener(SignUp.this, new OnCompleteListener<DocumentReference>() {
+        tvAlreadyHaveAccount.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onComplete(@NonNull Task<DocumentReference> task) {
-                if (task.isSuccessful()) {
-                    Toast.makeText(SignUp.this,"User Created", Toast.LENGTH_LONG).show();
-                    startActivity(finishsignup);
-                }
-                else{
-                    Toast.makeText(SignUp.this,"Sign Up Failed", Toast.LENGTH_LONG).show();
-                }
-
+            public void onClick(View v) {
+                Intent signInIntent = new Intent(SignUp.this, SignIn.class);
+                startActivity(signInIntent);
+                finish();
             }
         });
+    }
 
+    private void performSignUp(View view) {
+        String name = firstNameInput.getText().toString().trim();
+        String lastname = lastNameInput.getText().toString().trim();
+        String email = emailInput.getText().toString().trim();
+        String password = passwordInput.getText().toString().trim();
+
+        if (TextUtils.isEmpty(name) || TextUtils.isEmpty(lastname) || TextUtils.isEmpty(email) || TextUtils.isEmpty(password)) {
+            Snackbar.make(view, "All fields are required!", Snackbar.LENGTH_SHORT)
+                    .setBackgroundTint(Color.RED)
+                    .show();
+            return;
+        }
+
+        if (password.length() < 6) {
+            Snackbar.make(view, "Password must be at least 6 characters long!", Snackbar.LENGTH_SHORT)
+                    .setBackgroundTint(Color.RED)
+                    .show();
+            return;
+        }
+
+        signUpBtn.setEnabled(false);
+        Toast.makeText(SignUp.this, "Creating account...", Toast.LENGTH_SHORT).show();
+
+        mAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(SignUp.this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            FirebaseUser firebaseUser = mAuth.getCurrentUser();
+                            if (firebaseUser != null) {
+                                String uid = firebaseUser.getUid();
+                                UserInfo newUser = new UserInfo(name, lastname, uid);
+                                uploadNewUserToDB(uid, newUser);
+                            } else {
+                                signUpBtn.setEnabled(true);
+                                Toast.makeText(SignUp.this, "Authentication failed.", Toast.LENGTH_LONG).show();
+                            }
+                        } else {
+                            signUpBtn.setEnabled(true);
+                            String errorMsg = task.getException() != null ? task.getException().getMessage() : "Sign up failed";
+                            Toast.makeText(SignUp.this, errorMsg, Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+    }
+
+    private void uploadNewUserToDB(String userId, UserInfo newUser) {
+        db.collection("users").document(userId).set(newUser)
+                .addOnCompleteListener(SignUp.this, new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        signUpBtn.setEnabled(true);
+                        if (task.isSuccessful()) {
+                            Toast.makeText(SignUp.this, "Account Created Successfully!", Toast.LENGTH_LONG).show();
+                            // Redirect to Dashboard (BrouseHosesOrUploadListing)
+                            Intent dashboardIntent = new Intent(SignUp.this, BrouseHosesOrUploadListing.class);
+                            dashboardIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(dashboardIntent);
+                            finish();
+                        } else {
+                            String errorMsg = task.getException() != null ? task.getException().getMessage() : "Database save failed";
+                            Toast.makeText(SignUp.this, "Profile saving failed: " + errorMsg, Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
     }
 }

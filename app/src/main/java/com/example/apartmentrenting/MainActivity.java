@@ -4,11 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -16,14 +15,24 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Auto-login check
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser != null) {
+            Intent dashboardIntent = new Intent(MainActivity.this, BrouseHosesOrUploadListing.class);
+            startActivity(dashboardIntent);
+            finish();
+            return;
+        }
+
         setContentView(R.layout.activity_main);
 
-        Intent SignUp = new Intent(MainActivity.this , SignUp.class);
-        Intent SignIn = new Intent(MainActivity.this , SignIn.class);
-        Button SignUpButton = findViewById(R.id.SignUpButton);
-        Button SignInButton = findViewById(R.id.SignInButton);
-        SignUpButton.setOnClickListener(v -> startActivity(SignUp));
-        SignInButton.setOnClickListener(v -> startActivity(SignIn));
-
+        Intent signUpIntent = new Intent(MainActivity.this, SignUp.class);
+        Intent signInIntent = new Intent(MainActivity.this, SignIn.class);
+        
+        Button signUpButton = findViewById(R.id.SignUpButton);
+        Button signInButton = findViewById(R.id.SignInButton);
+        
+        signUpButton.setOnClickListener(v -> startActivity(signUpIntent));
+        signInButton.setOnClickListener(v -> startActivity(signInIntent));
     }
 }

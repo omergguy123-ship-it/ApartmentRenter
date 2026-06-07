@@ -5,69 +5,737 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="24dp"
-    tools:context=".MainActivity">
+    android:background="@color/colorBackground"
+    tools:context=".BrouseHosesOrUploadListing">
 
-    <!-- App Title -->
-    <TextView
-        android:id="@+id/welcomeTitle"
-        android:layout_width="0dp"
+    <!-- Top Toolbar Header -->
+    <LinearLayout
+        android:id="@+id/dashboardHeader"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Find your dream home with ApartmentRenter"
-        android:textSize="28sp"
-        android:textStyle="bold"
-        android:textAlignment="center"
-        android:lineSpacingExtra="6dp"
-        android:layout_marginTop="32dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:orientation="horizontal"
+        android:paddingHorizontal="24dp"
+        android:paddingVertical="18dp"
+        android:background="@color/colorSurface"
+        android:elevation="2dp"
+        android:gravity="center_vertical"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <!-- Button 1: Browse Houses -->
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnBrowseHouses"
-        android:layout_width="0dp"
-        android:layout_height="64dp"
-        android:text="Browse Houses for Rent"
-        android:textSize="16sp"
-        android:layout_marginTop="40dp"
-        android:backgroundTint="#1E3A8A"
-        android:textColor="@android:color/white"
-        app:icon="@android:drawable/ic_menu_search"
-        app:iconGravity="textStart"
-        app:cornerRadius="12dp"
-        app:layout_constraintTop_toBottomOf="@id/welcomeTitle"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
 
-    <!-- Button 2: Upload Listing -->
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnUploadListing"
-        android:layout_width="0dp"
-        android:layout_height="64dp"
-        android:text="List Your Property"
-        android:textSize="16sp"
-        android:layout_marginTop="16dp"
-        android:backgroundTint="#0D9488"
-        android:textColor="@android:color/white"
-        app:icon="@android:drawable/ic_menu_add"
-        app:iconGravity="textStart"
-        app:cornerRadius="12dp"
-        app:layout_constraintTop_toBottomOf="@id/btnBrowseHouses"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Dashboard"
+                android:textColor="@color/colorTextSecondary"
+                android:textSize="12sp"
+                android:textStyle="bold" />
 
-    <!-- Decorative Illustration -->
-    <ImageView
-        android:id="@+id/mainIllustration"
-        android:layout_width="0dp"
+            <TextView
+                android:id="@+id/tvUserWelcome"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ApartmentRenter"
+                android:textColor="@color/colorOnBackground"
+                android:textSize="20sp"
+                android:fontFamily="sans-serif-black"
+                android:textStyle="bold"
+                android:layout_marginTop="2dp" />
+        </LinearLayout>
+
+        <!-- Dummy Profile Avatar -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:cardCornerRadius="20dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="@color/colorBorder"
+            app:cardElevation="0dp">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@android:drawable/ic_menu_myplaces"
+                android:padding="8dp"
+                app:tint="@color/colorPrimary"
+                android:background="#EFF6FF"
+                android:contentDescription="Avatar placeholder" />
+        </com.google.android.material.card.MaterialCardView>
+
+    </LinearLayout>
+
+    <!-- Main Content Frame -->
+    <FrameLayout
+        android:id="@+id/contentFrame"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="32dp"
-        android:scaleType="centerInside"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnUploadListing"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/image" />
+        app:layout_constraintTop_toBottomOf="@id/dashboardHeader"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavBar">
+
+        <!-- ================= EXPLORE TAB CONTENT ================= -->
+        <ScrollView
+            android:id="@+id/exploreContent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            android:visibility="visible">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="24dp">
+
+                <!-- Promo Banner Card -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="0dp"
+                    app:strokeWidth="1dp"
+                    app:strokeColor="@color/colorBorder"
+                    app:cardBackgroundColor="@color/colorSurface"
+                    android:layout_marginBottom="24dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="20dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Find your dream home"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="22sp"
+                            android:fontFamily="sans-serif-black"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Browse verified apartments, check user ratings, and book your stay securely."
+                            android:textColor="@color/colorTextSecondary"
+                            android:textSize="14sp"
+                            android:layout_marginTop="8dp"
+                            android:lineSpacingExtra="3dp" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Navigation Hub Cards -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Quick Actions"
+                    android:textColor="@color/colorOnBackground"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="12dp" />
+
+                <!-- Action: Browse Houses (Only card left in Explore) -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardBrowseHouses"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="2dp"
+                    app:cardBackgroundColor="@color/colorSurface"
+                    app:strokeWidth="1dp"
+                    app:strokeColor="@color/colorBorder"
+                    android:layout_marginBottom="16dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?android:attr/selectableItemBackground">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="20dp"
+                        android:gravity="center_vertical">
+
+                        <ImageView
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:src="@android:drawable/ic_menu_search"
+                            app:tint="@color/white"
+                            android:background="@drawable/bg_icon_indigo"
+                            android:padding="12dp"
+                            android:contentDescription="Search Icon" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_marginStart="16dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Browse Listings"
+                                android:textColor="@color/colorOnBackground"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Look for cozy rentals"
+                                android:textColor="@color/colorTextSecondary"
+                                android:textSize="13sp"
+                                android:layout_marginTop="2dp" />
+                        </LinearLayout>
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@android:drawable/ic_media_play"
+                            app:tint="@color/colorTextSecondary"
+                            android:contentDescription="Go" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+            </LinearLayout>
+        </ScrollView>
+
+        <!-- ================= HOST TAB CONTENT ================= -->
+        <FrameLayout
+            android:id="@+id/hostContent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone">
+
+            <!-- STATE A: Become a Host Opt-in -->
+            <ScrollView
+                android:id="@+id/layoutBecomeHost"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fillViewport="true"
+                android:visibility="visible">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="24dp"
+                    android:gravity="center_horizontal">
+
+                    <ImageView
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        android:src="@android:drawable/ic_menu_add"
+                        app:tint="@color/colorPrimary"
+                        android:background="#EFF6FF"
+                        android:padding="32dp"
+                        android:layout_marginTop="32dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Be a Host on ApartmentRenter"
+                        android:textColor="@color/colorOnBackground"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:layout_marginTop="24dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Share your apartment, studio, villa, or cabin with travelers from all over the world. Earn income by listing your empty spaces."
+                        android:textColor="@color/colorTextSecondary"
+                        android:textSize="14sp"
+                        android:textAlignment="center"
+                        android:layout_marginTop="12dp"
+                        android:lineSpacingExtra="4dp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnBecomeHost"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:layout_marginTop="40dp"
+                        android:text="Become a Host"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/white"
+                        android:backgroundTint="@color/colorPrimary"
+                        app:cornerRadius="16dp"
+                        app:elevation="4dp" />
+
+                </LinearLayout>
+            </ScrollView>
+
+            <!-- STATE B: Host Listings Dashboard -->
+            <ScrollView
+                android:id="@+id/layoutHostDashboard"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fillViewport="true"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingBottom="36dp">
+
+                    <!-- Incoming Requests Header -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Incoming Requests"
+                        android:textColor="@color/colorOnBackground"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:layout_marginStart="24dp"
+                        android:layout_marginTop="24dp"
+                        android:layout_marginBottom="8dp" />
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:minHeight="120dp">
+
+                        <!-- Booking Requests Recycler -->
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rvBookingRequests"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:nestedScrollingEnabled="false"
+                            android:visibility="visible" />
+
+                        <!-- Empty state booking requests -->
+                        <LinearLayout
+                            android:id="@+id/layoutBookingRequestsEmpty"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:padding="32dp"
+                            android:layout_gravity="center"
+                            android:visibility="gone">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="No pending requests"
+                                android:textColor="@color/colorOnBackground"
+                                android:textSize="14sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Incoming booking requests will appear here."
+                                android:textColor="@color/colorTextSecondary"
+                                android:textSize="12sp"
+                                android:layout_marginTop="2dp" />
+                        </LinearLayout>
+                    </FrameLayout>
+
+                    <!-- Divider -->
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/colorBorder"
+                        android:layout_marginHorizontal="24dp"
+                        android:layout_marginVertical="16dp" />
+
+                    <!-- Confirmed Reservations Header -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Confirmed Reservations"
+                        android:textColor="@color/colorOnBackground"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:layout_marginStart="24dp"
+                        android:layout_marginBottom="8dp" />
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:minHeight="120dp">
+
+                        <!-- Confirmed Reservations Recycler -->
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rvConfirmedReservations"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:nestedScrollingEnabled="false"
+                            android:visibility="visible" />
+
+                        <!-- Empty state confirmed reservations -->
+                        <LinearLayout
+                            android:id="@+id/layoutConfirmedReservationsEmpty"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:padding="32dp"
+                            android:layout_gravity="center"
+                            android:visibility="gone">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="No confirmed reservations"
+                                android:textColor="@color/colorOnBackground"
+                                android:textSize="14sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Accepted guest bookings will appear here."
+                                android:textColor="@color/colorTextSecondary"
+                                android:textSize="12sp"
+                                android:layout_marginTop="2dp" />
+                        </LinearLayout>
+                    </FrameLayout>
+
+                    <!-- Divider -->
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/colorBorder"
+                        android:layout_marginHorizontal="24dp"
+                        android:layout_marginVertical="16dp" />
+
+                    <!-- Header Actions -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingHorizontal="24dp"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="My Active Listings"
+                            android:textColor="@color/colorOnBackground"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnHostAddNew"
+                            style="@style/Widget.Material3.Button.IconButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:icon="@android:drawable/ic_menu_add"
+                            app:iconTint="@color/colorPrimary"
+                            android:contentDescription="Add New Listing" />
+                    </LinearLayout>
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:minHeight="160dp">
+
+                        <!-- Users listings recycler -->
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rvMyListings"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:nestedScrollingEnabled="false"
+                            android:visibility="visible" />
+
+                        <!-- Empty state listings -->
+                        <LinearLayout
+                            android:id="@+id/layoutMyListingsEmpty"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:gravity="center"
+                            android:padding="32dp"
+                            android:layout_gravity="center"
+                            android:visibility="gone">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="No listings posted yet"
+                                android:textColor="@color/colorOnBackground"
+                                android:textSize="15sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Tap the + button to post your first space."
+                                android:textColor="@color/colorTextSecondary"
+                                android:textSize="13sp"
+                                android:layout_marginTop="4dp" />
+                        </LinearLayout>
+                    </FrameLayout>
+
+                </LinearLayout>
+            </ScrollView>
+        </FrameLayout>
+
+        <!-- ================= PROFILE TAB CONTENT ================= -->
+        <ScrollView
+            android:id="@+id/profileContent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingBottom="36dp">
+
+                <!-- Profile Info Card -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal"
+                    android:paddingHorizontal="28dp"
+                    android:paddingTop="24dp">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="88dp"
+                        android:layout_height="88dp"
+                        app:cardCornerRadius="44dp"
+                        app:strokeWidth="2dp"
+                        app:strokeColor="@color/colorPrimary"
+                        app:cardElevation="0dp">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:src="@android:drawable/ic_menu_myplaces"
+                            android:padding="18dp"
+                            app:tint="@color/colorPrimary"
+                            android:background="#EFF6FF"
+                            android:contentDescription="Profile Photo" />
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <TextView
+                        android:id="@+id/tvProfileFullName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="User Name"
+                        android:textColor="@color/colorOnBackground"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:layout_marginTop="12dp" />
+
+                    <TextView
+                        android:id="@+id/tvProfileEmail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="user@email.com"
+                        android:textColor="@color/colorTextSecondary"
+                        android:textSize="14sp"
+                        android:layout_marginTop="2dp" />
+                </LinearLayout>
+
+                <!-- Bookings section -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="My Bookings"
+                    android:textColor="@color/colorOnBackground"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="28dp"
+                    android:layout_marginBottom="8dp" />
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="160dp">
+
+                    <!-- Bookings Recycler -->
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rvMyBookings"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:nestedScrollingEnabled="false"
+                        android:visibility="visible" />
+
+                    <!-- Empty state bookings -->
+                    <LinearLayout
+                        android:id="@+id/layoutMyBookingsEmpty"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:padding="32dp"
+                        android:layout_gravity="center"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="No active bookings"
+                            android:textColor="@color/colorOnBackground"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Booked houses will appear here."
+                            android:textColor="@color/colorTextSecondary"
+                            android:textSize="12sp"
+                            android:layout_marginTop="2dp" />
+                    </LinearLayout>
+                </FrameLayout>
+
+                <!-- Schedule Booking Reminder Button -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnScheduleReminder"
+                    android:layout_width="match_parent"
+                    android:layout_height="54dp"
+                    android:layout_marginHorizontal="24dp"
+                    android:layout_marginTop="18dp"
+                    android:text="Schedule Booking Reminder"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/white"
+                    android:backgroundTint="@color/colorPrimary"
+                    app:cornerRadius="14dp" />
+
+                <!-- Divider -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/colorBorder"
+                    android:layout_marginHorizontal="24dp"
+                    android:layout_marginVertical="24dp" />
+
+                <!-- Logout Button -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnSignOut"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="54dp"
+                    android:layout_marginHorizontal="24dp"
+                    android:text="Log Out"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/colorError"
+                    app:strokeColor="@color/colorError"
+                    app:strokeWidth="1.5dp"
+                    app:cornerRadius="14dp" />
+
+            </LinearLayout>
+        </ScrollView>
+
+    </FrameLayout>
+
+    <!-- Custom Bottom Navigation Bar -->
+    <LinearLayout
+        android:id="@+id/bottomNavBar"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:orientation="horizontal"
+        android:background="@color/colorSurface"
+        android:elevation="8dp"
+        android:gravity="center_vertical"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <!-- Tab 1: Explore -->
+        <LinearLayout
+            android:id="@+id/tabExplore"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?android:attr/selectableItemBackground">
+
+            <ImageView
+                android:id="@+id/ivTabExplore"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@android:drawable/ic_menu_search"
+                app:tint="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/tvTabExplore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Explore"
+                android:textColor="@color/colorPrimary"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:layout_marginTop="2dp" />
+        </LinearLayout>
+
+        <!-- Tab 2: Host -->
+        <LinearLayout
+            android:id="@+id/tabHost"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?android:attr/selectableItemBackground">
+
+            <ImageView
+                android:id="@+id/ivTabHost"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@android:drawable/ic_menu_add"
+                app:tint="@color/colorTextSecondary" />
+
+            <TextView
+                android:id="@+id/tvTabHost"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hosting"
+                android:textColor="@color/colorTextSecondary"
+                android:textSize="11sp"
+                android:layout_marginTop="2dp" />
+        </LinearLayout>
+
+        <!-- Tab 3: Profile -->
+        <LinearLayout
+            android:id="@+id/tabProfile"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?android:attr/selectableItemBackground">
+
+            <ImageView
+                android:id="@+id/ivTabProfile"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@android:drawable/ic_menu_myplaces"
+                app:tint="@color/colorTextSecondary" />
+
+            <TextView
+                android:id="@+id/tvTabProfile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Profile"
+                android:textColor="@color/colorTextSecondary"
+                android:textSize="11sp"
+                android:layout_marginTop="2dp" />
+        </LinearLayout>
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

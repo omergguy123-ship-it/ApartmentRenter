@@ -1,0 +1,396 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorBackground"
+    tools:context=".HouseDetailActivity">
+
+    <!-- Scrollable Detail Body -->
+    <ScrollView
+        android:id="@+id/detailScrollView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottomBookingBar">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Hero Image Container with Back Button Overlay -->
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="280dp">
+
+                <ImageView
+                    android:id="@+id/detailImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/image"
+                    android:contentDescription="Property Image" />
+
+                <!-- Transparent Gradient overlay at bottom for title contrast -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:layout_gravity="bottom"
+                    android:background="@android:drawable/screen_background_light_transparent"
+                    android:visibility="gone" />
+
+                <!-- Floating Back Button -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/btnDetailBackCard"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:layout_margin="16dp"
+                    app:cardCornerRadius="22dp"
+                    app:cardElevation="4dp"
+                    app:strokeWidth="0dp"
+                    app:cardBackgroundColor="@color/white"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:src="@android:drawable/ic_menu_revert"
+                        app:tint="@color/colorOnBackground"
+                        android:contentDescription="Back" />
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Rating Tag Floating -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|end"
+                    android:layout_margin="16dp"
+                    android:orientation="horizontal"
+                    android:background="@drawable/bg_rating_badge"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="6dp"
+                    android:gravity="center_vertical"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/detailRating"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="★ 4.8"
+                        android:textColor="@color/black"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+            </FrameLayout>
+
+            <!-- Main Specs Container -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="24dp">
+
+                <!-- Category Badge -->
+                <TextView
+                    android:id="@+id/detailCategory"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Apartment"
+                    android:textColor="@color/white"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:background="@color/colorSecondary"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="5dp"
+                    android:layout_marginBottom="8dp" />
+
+                <!-- Title -->
+                <TextView
+                    android:id="@+id/detailTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Cozy Downtown Loft with View"
+                    android:textColor="@color/colorOnBackground"
+                    android:textSize="24sp"
+                    android:fontFamily="sans-serif-black"
+                    android:textStyle="bold" />
+
+                <!-- Location -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="8dp">
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@android:drawable/ic_menu_mapmode"
+                        app:tint="@color/colorTextSecondary"
+                        android:contentDescription="Map icon" />
+
+                    <TextView
+                        android:id="@+id/detailLocation"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="New York, USA"
+                        android:textColor="@color/colorTextSecondary"
+                        android:textSize="14sp"
+                        android:layout_marginStart="4dp" />
+                </LinearLayout>
+
+                <!-- Horizontal Divider -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/colorBorder"
+                    android:layout_marginVertical="16dp" />
+
+                <!-- Core Specs (Beds, Baths) Row -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:cardCornerRadius="12dp"
+                        app:cardElevation="0dp"
+                        app:strokeWidth="1dp"
+                        app:strokeColor="@color/colorBorder"
+                        app:cardBackgroundColor="@color/colorSurface"
+                        android:layout_marginEnd="12dp">
+
+                        <TextView
+                            android:id="@+id/detailBeds"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="3 Beds"
+                            android:textColor="@color/colorOnBackground"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            android:paddingHorizontal="16dp"
+                            android:paddingVertical="10dp"/>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:cardCornerRadius="12dp"
+                        app:cardElevation="0dp"
+                        app:strokeWidth="1dp"
+                        app:strokeColor="@color/colorBorder"
+                        app:cardBackgroundColor="@color/colorSurface">
+
+                        <TextView
+                            android:id="@+id/detailBaths"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="2 Baths"
+                            android:textColor="@color/colorOnBackground"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            android:paddingHorizontal="16dp"
+                            android:paddingVertical="10dp"/>
+                    </com.google.android.material.card.MaterialCardView>
+
+                </LinearLayout>
+
+                <!-- Host Details Info -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="20dp"
+                    android:background="@color/colorSurface"
+                    android:padding="16dp"
+                    android:gravity="center_vertical">
+
+                    <!-- Host Avatar -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        app:cardCornerRadius="20dp"
+                        app:strokeWidth="1dp"
+                        app:strokeColor="@color/colorBorder"
+                        app:cardElevation="0dp">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:src="@android:drawable/ic_menu_myplaces"
+                            android:padding="8dp"
+                            app:tint="@color/colorPrimary"
+                            android:background="#EFF6FF"
+                            android:contentDescription="Host Avatar" />
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginStart="12dp">
+
+                        <TextView
+                            android:id="@+id/detailHostName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Hosted by Host Name"
+                            android:textColor="@color/colorOnBackground"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Verified Professional Host"
+                            android:textColor="@color/colorTextSecondary"
+                            android:textSize="12sp"
+                            android:layout_marginTop="1dp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Description Heading -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="About this listing"
+                    android:textColor="@color/colorOnBackground"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="24dp" />
+
+                <!-- Description Text -->
+                <TextView
+                    android:id="@+id/detailDescription"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="This is listing description placeholder text. Enjoy full amenities, near downtown hotspots, quiet neighborhood."
+                    android:textColor="@color/colorTextSecondary"
+                    android:textSize="14sp"
+                    android:layout_marginTop="8dp"
+                    android:lineSpacingExtra="4dp" />
+
+                <!-- Amenities Section -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Amenities Offered"
+                    android:textColor="@color/colorOnBackground"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginBottom="12dp" />
+
+                <!-- Row of Amenity Status -->
+                <com.google.android.material.chip.ChipGroup
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:chipSpacingHorizontal="8dp"
+                    app:chipSpacingVertical="4dp">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipWifi"
+                        style="@style/Widget.Material3.Chip.Suggestion"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Wi-Fi"
+                        android:clickable="false"
+                        app:chipCornerRadius="10dp" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipAc"
+                        style="@style/Widget.Material3.Chip.Suggestion"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Air Conditioning"
+                        android:clickable="false"
+                        app:chipCornerRadius="10dp" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipKitchen"
+                        style="@style/Widget.Material3.Chip.Suggestion"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Kitchen"
+                        android:clickable="false"
+                        app:chipCornerRadius="10dp" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipParking"
+                        style="@style/Widget.Material3.Chip.Suggestion"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Free Parking"
+                        android:clickable="false"
+                        app:chipCornerRadius="10dp" />
+
+                </com.google.android.material.chip.ChipGroup>
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Floating Sticky Bottom Booking Bar -->
+    <LinearLayout
+        android:id="@+id/bottomBookingBar"
+        android:layout_width="match_parent"
+        android:layout_height="76dp"
+        android:orientation="horizontal"
+        android:background="@color/colorSurface"
+        android:paddingHorizontal="24dp"
+        android:gravity="center_vertical"
+        android:elevation="12dp"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/detailPrice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="$120"
+                android:textColor="@color/colorPrimary"
+                android:textSize="22sp"
+                android:fontFamily="sans-serif-black"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Total per night"
+                android:textColor="@color/colorTextSecondary"
+                android:textSize="11sp" />
+        </LinearLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnBookNow"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:text="Book Now"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/colorPrimary"
+            android:paddingHorizontal="28dp"
+            app:cornerRadius="14dp" />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,40 +1,41 @@
 package com.example.apartmentrenting;
 
 public class UserInfo {
-    private String FirstName,LastName,UserID;
+    private String firstName;
+    private String lastName;
+    private String userID;
 
+    // No-arg constructor required for Firestore
+    public UserInfo() {
+    }
 
     public UserInfo(String firstName, String lastName, String userID) {
-        FirstName = firstName;
-        LastName = lastName;
-        UserID = userID;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.userID = userID;
     }
 
     public String getFirstName() {
-        return FirstName;
-    }
-
-    public String getLastName() {
-        return LastName;
-    }
-
-    public String getUserID() {
-        return UserID;
+        return firstName;
     }
 
     public void setFirstName(String firstName) {
-        FirstName = firstName;
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
     }
 
     public void setLastName(String lastName) {
-        LastName = lastName;
+        this.lastName = lastName;
+    }
+
+    public String getUserID() {
+        return userID;
     }
 
     public void setUserID(String userID) {
-        UserID = userID;
+        this.userID = userID;
     }
-
-
-
-
 }

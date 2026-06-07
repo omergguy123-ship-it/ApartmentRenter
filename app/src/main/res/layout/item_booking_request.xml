@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="16dp"
+    android:layout_marginVertical="8dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="2dp"
+    app:strokeWidth="1dp"
+    app:strokeColor="@color/colorBorder"
+    app:cardBackgroundColor="@color/colorSurface">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Top Row: Property Title & Price -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/reqPropertyTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Malibu Beach Villa"
+                android:textColor="@color/colorOnBackground"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:ellipsize="end"
+                android:maxLines="1" />
+
+            <TextView
+                android:id="@+id/reqPrice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="$450"
+                android:textColor="@color/colorPrimary"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- Renter Name -->
+        <TextView
+            android:id="@+id/reqRenterName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Guest: Omer"
+            android:textColor="@color/colorSecondary"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:layout_marginTop="2dp" />
+
+        <!-- Check-in / Out Dates -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:src="@android:drawable/ic_menu_myplaces"
+                app:tint="@color/colorTextSecondary"
+                android:contentDescription="Date icon" />
+
+            <TextView
+                android:id="@+id/reqDatesText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Jun 12, 2026 - Jun 18, 2026"
+                android:textColor="@color/colorTextSecondary"
+                android:textSize="13sp"
+                android:layout_marginStart="6dp" />
+        </LinearLayout>
+
+        <!-- Renter Message / Note -->
+        <LinearLayout
+            android:id="@+id/layoutReqNote"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#F8FAFC"
+            android:padding="12dp"
+            android:layout_marginTop="12dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Note from guest:"
+                android:textColor="@color/colorTextSecondary"
+                android:textSize="11sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/reqNoteText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Hello, I would love to rent your space!"
+                android:textColor="@color/colorOnBackground"
+                android:textSize="13sp"
+                android:textStyle="italic"
+                android:layout_marginTop="2dp" />
+        </LinearLayout>
+
+        <!-- Action Buttons Row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="16dp"
+            android:gravity="end">
+
+            <!-- Decline Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnReqDecline"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="44dp"
+                android:text="Decline"
+                android:textColor="@color/colorError"
+                app:strokeColor="@color/colorError"
+                app:strokeWidth="1.5dp"
+                app:cornerRadius="10dp"
+                android:layout_marginEnd="12dp" />
+
+            <!-- Accept Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnReqAccept"
+                android:layout_width="wrap_content"
+                android:layout_height="44dp"
+                android:text="Accept"
+                android:textColor="@color/white"
+                android:backgroundTint="@color/colorGreenAccent"
+                app:cornerRadius="10dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

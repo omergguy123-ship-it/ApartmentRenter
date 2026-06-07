@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="16dp"
+    android:layout_marginVertical="8dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="2dp"
+    app:strokeWidth="1dp"
+    app:strokeColor="@color/colorBorder"
+    app:cardBackgroundColor="@color/colorSurface">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Top Row: Property Title & Price -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/confPropertyTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Malibu Beach Villa"
+                android:textColor="@color/colorOnBackground"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:ellipsize="end"
+                android:maxLines="1" />
+
+            <TextView
+                android:id="@+id/confPrice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="$450"
+                android:textColor="@color/colorPrimary"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- Guest Name & Status Badge -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="4dp"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/confRenterName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Guest: Omer"
+                android:textColor="@color/colorSecondary"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+            <!-- Confirmed Status Badge -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Confirmed"
+                android:textColor="#047857"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:background="#D1FAE5"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="4dp" />
+        </LinearLayout>
+
+        <!-- Check-in / Out Dates -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:src="@android:drawable/ic_menu_myplaces"
+                app:tint="@color/colorTextSecondary"
+                android:contentDescription="Date icon" />
+
+            <TextView
+                android:id="@+id/confDatesText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Jun 12, 2026 - Jun 18, 2026"
+                android:textColor="@color/colorTextSecondary"
+                android:textSize="13sp"
+                android:layout_marginStart="6dp" />
+        </LinearLayout>
+
+        <!-- Guest Message / Note -->
+        <LinearLayout
+            android:id="@+id/layoutConfNote"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#F8FAFC"
+            android:padding="12dp"
+            android:layout_marginTop="12dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Note from guest:"
+                android:textColor="@color/colorTextSecondary"
+                android:textSize="11sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/confNoteText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Hello, I would love to rent your space!"
+                android:textColor="@color/colorOnBackground"
+                android:textSize="13sp"
+                android:textStyle="italic"
+                android:layout_marginTop="2dp" />
+        </LinearLayout>
+
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

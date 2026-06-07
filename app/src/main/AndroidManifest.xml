@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -21,7 +24,7 @@
             android:name=".BrowseHousesActivity"
             android:exported="false" />
         <activity
-            android:name=".RENTorSEARCH"
+            android:name=".HouseDetailActivity"
             android:exported="false" />
         <activity
             android:name=".SignUp"
@@ -38,6 +41,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <receiver
+            android:name=".ReminderReceiver"
+            android:exported="false" />
     </application>
 
 </manifest>
