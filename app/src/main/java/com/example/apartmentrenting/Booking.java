@@ -1,27 +1,58 @@
 package com.example.apartmentrenting;
 
+/**
+ * מחלקת מודל (Model) המייצגת הזמנה (Booking) במערכת.
+ * כל הזמנה מקשרת בין שוכר (renter) לנכס (listing) ולמארח (host).
+ * המחלקה משמשת גם לשמירה ב-Cloud Firestore וגם להצגה ב-RecyclerView.
+ *
+ * ערכי status האפשריים:
+ *   "PENDING"  - הבקשה נשלחה וממתינה לאישור המארח
+ *   "APPROVED" - המארח אישר את הבקשה
+ *   "DECLINED" - המארח דחה את הבקשה
+ */
 public class Booking {
+    // מזהה ייחודי של ההזמנה ב-Firestore
     private String bookingId;
+    // מזהה הנכס שהוזמן (document ID ב-listings)
     private String listingId;
+    // UID של השוכר (Firebase Auth UID)
     private String renterUid;
+    // שם מלא של השוכר (firstName + lastName) לתצוגה אצל המארח
     private String renterName;
+    // כותרת הנכס לתצוגה בכרטיסי ההזמנה
     private String propertyTitle;
+    // URL של תמונת הנכס (Firebase Storage או Unsplash)
     private String imageUrl;
+    // מיקום הנכס
     private String location;
+    // מחיר הנכס ללילה בדולרים
     private double price;
+    // חותמת זמן (Unix timestamp) של מועד שליחת ההזמנה
     private long bookingDate;
-    private String status;       // "PENDING", "APPROVED", "DECLINED"
-    private String checkInDate;  // e.g. "2026-06-12"
-    private String checkOutDate; // e.g. "2026-06-18"
-    private String note;         // Custom text note to host
-    private String hostUid;      // Owner's UID
+    // סטטוס ההזמנה: "PENDING" / "APPROVED" / "DECLINED"
+    private String status;
+    // תאריך כניסה מרוצה בפורמט "YYYY-MM-DD" (לדוגמה: "2026-06-12")
+    private String checkInDate;
+    // תאריך עזיבה מרוצה בפורמט "YYYY-MM-DD" (לדוגמה: "2026-06-18")
+    private String checkOutDate;
+    // הערה חופשית שהשוכר כותב למארח עם הגשת הבקשה
+    private String note;
+    // UID של המארח (Firebase Auth UID) - לשאילתת הבקשות של המארח
+    private String hostUid;
 
-    // No-arg constructor required for Firestore
+    /**
+     * בנאי ריק (No-arg constructor) - נדרש על ידי Firestore לבצע
+     * deserialization אוטומטי ממסמכי Firestore לאובייקטי Java.
+     */
     public Booking() {
     }
 
-    public Booking(String bookingId, String listingId, String renterUid, String renterName, String propertyTitle, 
-                   String imageUrl, String location, double price, long bookingDate, String status, 
+    /**
+     * בנאי מלא ליצירת אובייקט Booking חדש עם כל הפרמטרים.
+     * נקרא ב-HouseDetailActivity בעת שליחת בקשת הזמנה חדשה.
+     */
+    public Booking(String bookingId, String listingId, String renterUid, String renterName, String propertyTitle,
+                   String imageUrl, String location, double price, long bookingDate, String status,
                    String checkInDate, String checkOutDate, String note, String hostUid) {
         this.bookingId = bookingId;
         this.listingId = listingId;
@@ -38,6 +69,9 @@ public class Booking {
         this.note = note;
         this.hostUid = hostUid;
     }
+
+    // --- Getters ו-Setters ---
+    // נדרשים על ידי Firestore לקריאה וכתיבה של שדות האובייקט
 
     public String getBookingId() {
         return bookingId;

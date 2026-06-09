@@ -17,6 +17,11 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.chip.Chip;
 
+import java.util.Calendar;
+import java.util.Locale;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class HouseDetailActivity extends AppCompatActivity {
 
     private ImageView detailImage;
@@ -42,7 +47,7 @@ public class HouseDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_house_detail);
 
-        // 1. Bind UI elements
+        // 1. קישור רכיבי ממשק המשתמש (UI Views) מהקובץ activity_house_detail.xml
         detailImage = findViewById(R.id.detailImage);
         btnDetailBackCard = findViewById(R.id.btnDetailBackCard);
         detailRating = findViewById(R.id.detailRating);
@@ -62,10 +67,10 @@ public class HouseDetailActivity extends AppCompatActivity {
         detailPrice = findViewById(R.id.detailPrice);
         btnBookNow = findViewById(R.id.btnBookNow);
 
-        // 2. Set back action
+        // 2. הגדרת כפתור החזרה למסך הקודם
         btnDetailBackCard.setOnClickListener(v -> finish());
 
-        // 3. Extract parameters from intent bundle
+        // 3. חילוץ המידע שהועבר מהמסך הקודם (כמו מזהה הנכס, מחיר, תיאור, תמונות וכד')
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             String listingId = extras.getString("listingId", "");
@@ -86,7 +91,7 @@ public class HouseDetailActivity extends AppCompatActivity {
             boolean hasKitchen = extras.getBoolean("kitchen", false);
             boolean hasParking = extras.getBoolean("parking", false);
 
-            // 4. Bind values to UI
+            // 4. הצגת הנתונים בטקסטים השונים בממשק
             detailTitle.setText(title);
             detailDescription.setText(description);
             detailLocation.setText(location);
@@ -97,7 +102,7 @@ public class HouseDetailActivity extends AppCompatActivity {
             detailBaths.setText(baths + (baths == 1 ? " Bath" : " Baths"));
             detailPrice.setText(String.format("$%.0f", price));
 
-            // Load listing image
+            // טעינת תמונת הנכס בעזרת ספריית Glide החיצונית המנהלת זיכרון ומטפלת בטעינה אסינכרונית
             if (imageUrl != null && !imageUrl.isEmpty()) {
                 Glide.with(this)
                         .load(imageUrl)
@@ -108,21 +113,25 @@ public class HouseDetailActivity extends AppCompatActivity {
                 detailImage.setImageResource(R.drawable.image);
             }
 
-            // Style Amenity Chips
+            // עיצוב וצביעת הצ'יפים של השירותים המוצעים (לדוגמה: כחול אם יש Wifi, אפור כבוי אם אין)
             styleAmenityChip(chipWifi, hasWifi, "Wi-Fi");
             styleAmenityChip(chipAc, hasAc, "Air Conditioning");
             styleAmenityChip(chipKitchen, hasKitchen, "Kitchen");
             styleAmenityChip(chipParking, hasParking, "Free Parking");
 
-            // Self-Booking Prevention check
+            // בדיקת מניעת הזמנה עצמית (Self-Booking Prevention)
+            // שולף את מזהה המשתמש המחובר כרגע מתוך FirebaseAuth
             String currentUid = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser() != null ? 
                     com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser().getUid() : "";
+            
+            // השוואה: אם מזהה בעל הנכס (hostUid) שווה למזהה המשתמש המחובר כעת (currentUid)
             if (!currentUid.isEmpty() && hostUid.equals(currentUid)) {
+                // המארח צופה בנכס שלו: ננטרל את כפתור ההזמנה, נצבע באפור ונשנה את הכיתוב ל-"הנכס שלך"
                 btnBookNow.setEnabled(false);
                 btnBookNow.setText("Your Property");
                 btnBookNow.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#9CA3AF")));
             } else {
-                // Book Now Click Event
+                // האורח צופה בנכס: בלחיצה, נציג לו את חלונית בקשת ההזמנה
                 btnBookNow.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -133,24 +142,32 @@ public class HouseDetailActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * פונקציה המציגה את חלונית הדיאלוג לבקשת הזמנה.
+     * החלונית כוללת בחירת תאריכים מלוח שנה (DatePickerDialog),
+     * הזנת הערה למארח, בדיקות תקינות תאריכים ושליחת הבקשה.
+     */
     private void showBookingRequestDialog(String listingId, String title, String imageUrl, String location, double price, 
                                          String hostUid, String hostName, String currentUid) {
+        // אינפלציה (טעינה) של קובץ העיצוב המותאם אישית dialog_booking_request.xml לתוך אובייקט View
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_booking_request, null);
         EditText etDialogCheckIn = dialogView.findViewById(R.id.etDialogCheckIn);
         EditText etDialogCheckOut = dialogView.findViewById(R.id.etDialogCheckOut);
         EditText etDialogNote = dialogView.findViewById(R.id.etDialogNote);
 
-        java.util.Calendar calendar = java.util.Calendar.getInstance();
+        Calendar calendar = Calendar.getInstance();
 
+        // מאזין ללחיצה על שדה תאריך כניסה - פותח DatePickerDialog מובנה של אנדרואיד
         etDialogCheckIn.setOnClickListener(v -> {
-            int year = calendar.get(java.util.Calendar.YEAR);
-            int month = calendar.get(java.util.Calendar.MONTH);
-            int day = calendar.get(java.util.Calendar.DAY_OF_MONTH);
+            int year = calendar.get(Calendar.YEAR);
+            int month = calendar.get(Calendar.MONTH);
+            int day = calendar.get(Calendar.DAY_OF_MONTH);
 
             android.app.DatePickerDialog datePickerDialog = new android.app.DatePickerDialog(
                     this,
                     (view, selectedYear, selectedMonth, selectedDay) -> {
-                        String dateStr = String.format(java.util.Locale.US, "%d-%02d-%02d", selectedYear, selectedMonth + 1, selectedDay);
+                        // שמירת התאריך הנבחר בפורמט קריא YYYY-MM-DD
+                        String dateStr = String.format(Locale.US, "%d-%02d-%02d", selectedYear, selectedMonth + 1, selectedDay);
                         etDialogCheckIn.setText(dateStr);
                     },
                     year, month, day
@@ -158,15 +175,17 @@ public class HouseDetailActivity extends AppCompatActivity {
             datePickerDialog.show();
         });
 
+        // מאזין ללחיצה על שדה תאריך עזיבה - פותח DatePickerDialog
         etDialogCheckOut.setOnClickListener(v -> {
-            int year = calendar.get(java.util.Calendar.YEAR);
-            int month = calendar.get(java.util.Calendar.MONTH);
-            int day = calendar.get(java.util.Calendar.DAY_OF_MONTH);
+            int year = calendar.get(Calendar.YEAR);
+            int month = calendar.get(Calendar.MONTH);
+            int day = calendar.get(Calendar.DAY_OF_MONTH);
 
             android.app.DatePickerDialog datePickerDialog = new android.app.DatePickerDialog(
                     this,
                     (view, selectedYear, selectedMonth, selectedDay) -> {
-                        String dateStr = String.format(java.util.Locale.US, "%d-%02d-%02d", selectedYear, selectedMonth + 1, selectedDay);
+                        // שמירת התאריך הנבחר בפורמט קריא YYYY-MM-DD
+                        String dateStr = String.format(Locale.US, "%d-%02d-%02d", selectedYear, selectedMonth + 1, selectedDay);
                         etDialogCheckOut.setText(dateStr);
                     },
                     year, month, day
@@ -174,6 +193,7 @@ public class HouseDetailActivity extends AppCompatActivity {
             datePickerDialog.show();
         });
 
+        // בניית תיבת דו-שיח מודרנית מבית Material Components
         new com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
                 .setTitle("Request Reservation")
                 .setView(dialogView)
@@ -182,13 +202,15 @@ public class HouseDetailActivity extends AppCompatActivity {
                     String checkOut = etDialogCheckOut.getText().toString().trim();
                     String note = etDialogNote.getText().toString().trim();
 
+                    // בדיקה האם השדות אינם ריקים
                     if (android.text.TextUtils.isEmpty(checkIn) || android.text.TextUtils.isEmpty(checkOut)) {
                         Toast.makeText(this, "Check-in and Check-out dates are required!", Toast.LENGTH_LONG).show();
                         return;
                     }
 
+                    // בדיקת וולידציית תאריכים: מוודא שתאריך העזיבה אינו מוקדם מתאריך הכניסה
                     try {
-                        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US);
+                        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd", Locale.US);
                         java.util.Date d1 = sdf.parse(checkIn);
                         java.util.Date d2 = sdf.parse(checkOut);
                         if (d2.before(d1)) {
@@ -196,20 +218,26 @@ public class HouseDetailActivity extends AppCompatActivity {
                             return;
                         }
                     } catch (Exception e) {
-                        // ignore or handle
+                        e.printStackTrace();
                     }
 
+                    // העברת הנתונים לפונקציית שליחת ההזמנה לשרת
                     submitBookingRequest(listingId, title, imageUrl, location, price, hostUid, hostName, currentUid, checkIn, checkOut, note);
                 })
                 .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
                 .show();
     }
 
+    /**
+     * פונקציה המבצעת את שמירת בקשת ההזמנה בסטטוס PENDING ב-Cloud Firestore.
+     * היא תחילה טוענת את שם האורח (FirstName + LastName) כדי שיוצג למארח,
+     * ולאחר מכן יוצרת אובייקט Booking חדש ושולחת אותו לענן.
+     */
     private void submitBookingRequest(String listingId, String title, String imageUrl, String location, double price, 
                                      String hostUid, String hostName, String currentUid, String checkIn, String checkOut, String note) {
         Toast.makeText(this, "Sending request...", Toast.LENGTH_SHORT).show();
 
-        // Retrieve renter's profile name from database
+        // שליפת שם האורח המלא משרת ה-Firestore (אוסף users)
         com.google.firebase.firestore.FirebaseFirestore.getInstance().collection("users").document(currentUid).get()
                 .addOnSuccessListener(documentSnapshot -> {
                     String renterName = "Guest User";
@@ -221,14 +249,18 @@ public class HouseDetailActivity extends AppCompatActivity {
                         }
                     }
 
+                    // יצירת מזהה ייחודי חדש עבור ההזמנה בתוך Firestore
                     String bookingId = com.google.firebase.firestore.FirebaseFirestore.getInstance().collection("bookings").document().getId();
                     long bookingDate = System.currentTimeMillis();
 
+                    // יצירת העצם (מונחה עצמים) של ההזמנה
                     Booking booking = new Booking(bookingId, listingId, currentUid, renterName, title, imageUrl, 
                                                   location, price, bookingDate, "PENDING", checkIn, checkOut, note, hostUid);
 
+                    // העלאת עצם ההזמנה ל-Firestore (אוסף bookings)
                     com.google.firebase.firestore.FirebaseFirestore.getInstance().collection("bookings").document(bookingId).set(booking)
                             .addOnSuccessListener(aVoid -> {
+                                // הצגת דיאלוג אישור הצלחה למשתמש
                                 new com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
                                         .setTitle("Request Sent!")
                                         .setMessage("Your booking request for \"" + title + "\" was successfully sent to the host.\n\nOnce the host approves your request, it will appear under your Bookings profile feed.")
@@ -244,6 +276,10 @@ public class HouseDetailActivity extends AppCompatActivity {
                 .addOnFailureListener(e -> Toast.makeText(this, "Failed to load user profile: " + e.getMessage(), Toast.LENGTH_LONG).show());
     }
 
+    /**
+     * פונקציה לעיצוב הצ'יפים של השירותים (Amenities).
+     * מציגה צבע כחול אקטיבי אם השירות קיים, או צבע אפור כבוי במידה והשירות לא מוצע בנכס.
+     */
     private void styleAmenityChip(Chip chip, boolean offered, String name) {
         if (offered) {
             chip.setText(name);
@@ -252,8 +288,8 @@ public class HouseDetailActivity extends AppCompatActivity {
             chip.setAlpha(1.0f);
         } else {
             chip.setText(name + " (Not Offered)");
-            chip.setChipBackgroundColor(ColorStateList.valueOf(Color.parseColor("#E5E7EB"))); // light grey
-            chip.setTextColor(Color.parseColor("#9CA3AF")); // disabled grey text
+            chip.setChipBackgroundColor(ColorStateList.valueOf(Color.parseColor("#E5E7EB"))); // צבע אפור בהיר
+            chip.setTextColor(Color.parseColor("#9CA3AF")); // טקסט אפור כהה
             chip.setAlpha(0.6f);
         }
     }

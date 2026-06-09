@@ -21,19 +21,40 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * BrowseHousesActivity - מסך חיפוש ועיון בנכסים זמינים להשכרה.
+ * נפתח בלחיצה על "Browse Listings" מהלשונית Explore.
+ *
+ * תכונות עיקריות:
+ * - טוען את כל הנכסים מ-Firestore ומציגם ב-RecyclerView.
+ * - מאפשר סינון חי (real-time) לפי טקסט חיפוש.
+ * - מאפשר סינון לפי קטגוריה (All / Apartment / Villa / Cabin / Studio) דרך ChipGroup.
+ * - בהרצה ראשונה, מנקה נתוני בדיקה ישנים ומזריע (seed) 3 נכסי ברירת מחדל יפים.
+ * - אם ה-DB ריק, מוסיף 3 נכסים לדוגמה (mock data) עם תמונות Unsplash.
+ */
 public class BrowseHousesActivity extends AppCompatActivity {
 
+    // שדה חיפוש טקסטואלי בחלק העליון של המסך
     private EditText etSearch;
+    // קבוצת Chip לסינון לפי קטגוריות נכס
     private ChipGroup chipGroupCategories;
+    // RecyclerView להצגת כרטיסי נכסים
     private RecyclerView recyclerViewListings;
+    // מכולה להצגת מסך "ריק" כשאין תוצאות
     private View emptyStateContainer;
+    // סרגל התקדמות (ספינר) בזמן טעינת נתונים מ-Firestore
     private ProgressBar progressBar;
+    // כפתור חזרה למסך הקודם
     private ImageButton btnBack;
 
+    // חיבור ל-Cloud Firestore - מסד הנתונים של האפליקציה
     private FirebaseFirestore db;
+    // רשימת כל הנכסים הטעונים מ-Firestore (לא מסוננת)
     private List<HouseListing> allListingsList = new ArrayList<>();
+    // ה-Adapter שמחבר בין הנתונים ל-RecyclerView
     private HouseAdapter adapter;
 
+    // משתנים לשמירת מצב הסינון הנוכחי
     private String currentSearchQuery = "";
     private String currentCategoryFilter = "All Properties";
 
@@ -42,9 +63,10 @@ public class BrowseHousesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_browse_houses);
 
+        // 1. אתחול חיבור ל-Firestore
         db = FirebaseFirestore.getInstance();
 
-        // 1. Bind Views
+        // 2. קישור רכיבי ממשק המשתמש מהקובץ activity_browse_houses.xml
         etSearch = findViewById(R.id.etSearch);
         chipGroupCategories = findViewById(R.id.chipGroupCategories);
         recyclerViewListings = findViewById(R.id.recyclerViewListings);
@@ -52,24 +74,27 @@ public class BrowseHousesActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar);
         btnBack = findViewById(R.id.btnBack);
 
-        // 2. Setup Back Button
+        // 3. כפתור חזרה - סוגר את ה-Activity ומחזיר למסך הקודם
         btnBack.setOnClickListener(v -> finish());
 
-        // 3. Setup RecyclerView
+        // 4. הגדרת RecyclerView עם LinearLayoutManager (רשימה אנכית)
         recyclerViewListings.setLayoutManager(new LinearLayoutManager(this));
         adapter = new HouseAdapter(this, new ArrayList<>());
         recyclerViewListings.setAdapter(adapter);
 
-        // 4. Clean manual test data exactly once on first load, then fetch
+        // 5. ניקוי נתוני בדיקה ישנים (פעם אחת בלבד) ולאחר מכן טעינת נכסים מ-Firestore
+        // cleanManualListingsAndBookingsOnce מקבלת Runnable כ-callback שמופעל לאחר הניקוי
         cleanManualListingsAndBookingsOnce(this::fetchListingsFromFirestore);
 
-        // 5. Setup Search Filter Listener
+        // 6. מאזין שינויי טקסט בשורת החיפוש - מסנן בזמן אמת (real-time)
+        // TextWatcher מופעל בכל שינוי תו בשדה החיפוש
         etSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // עדכון משתנה החיפוש וסינון הרשימה מחדש
                 currentSearchQuery = s.toString().trim();
                 applyFilters();
             }
@@ -78,40 +103,52 @@ public class BrowseHousesActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {}
         });
 
-        // 6. Setup Category Chip Listener
+        // 7. מאזין בחירת Chip לסינון לפי קטגוריה
+        // setOnCheckedStateChangeListener מופעל בכל שינוי בחירה ב-ChipGroup
         chipGroupCategories.setOnCheckedStateChangeListener((group, checkedIds) -> {
             if (!checkedIds.isEmpty()) {
                 int checkedId = checkedIds.get(0);
                 Chip chip = findViewById(checkedId);
                 if (chip != null) {
+                    // שמירת שם הקטגוריה שנבחרה וסינון מחדש
                     currentCategoryFilter = chip.getText().toString();
                     applyFilters();
                 }
             } else {
+                // אין Chip נבחר - חזרה לברירת מחדל "All Properties"
                 currentCategoryFilter = "All Properties";
                 applyFilters();
             }
         });
     }
 
+    /**
+     * fetchListingsFromFirestore - טוענת את כל הנכסים מאוסף "listings" ב-Firestore.
+     * מציגה ProgressBar בזמן הטעינה, ולאחר מכן מסננת ומציגה את התוצאות.
+     * אם המאגר ריק - קוראת ל-seedMockDataIfCollectionEmpty להוספת נכסי ברירת מחדל.
+     */
     private void fetchListingsFromFirestore() {
         progressBar.setVisibility(View.VISIBLE);
         recyclerViewListings.setVisibility(View.GONE);
         emptyStateContainer.setVisibility(View.GONE);
 
+        // שאילתה ל-Firestore לטעינת כל המסמכים מאוסף "listings"
+        // db.collection("listings").get() היא שאילתה אסינכרונית (asynchronous)
         db.collection("listings").get()
                 .addOnCompleteListener(task -> {
                     progressBar.setVisibility(View.GONE);
                     if (task.isSuccessful() && task.getResult() != null) {
                         allListingsList.clear();
+                        // המרת כל QueryDocumentSnapshot לאובייקט HouseListing באמצעות toObject()
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             HouseListing listing = document.toObject(HouseListing.class);
+                            // הגדרת ה-listingId ידנית כי Firestore אינו שומר אוטומטית את ה-Document ID בתוך האובייקט
                             listing.setListingId(document.getId());
                             allListingsList.add(listing);
                         }
 
                         if (allListingsList.isEmpty()) {
-                            // If empty, let's inject a few mock listings to guarantee beautiful UI on first open!
+                            // אם המאגר ריק - הוספת נכסים לדוגמה
                             seedMockDataIfCollectionEmpty();
                         } else {
                             recyclerViewListings.setVisibility(View.VISIBLE);
@@ -125,8 +162,13 @@ public class BrowseHousesActivity extends AppCompatActivity {
                 });
     }
 
+    /**
+     * seedMockDataIfCollectionEmpty - מוסיפה 3 נכסים לדוגמה ל-Firestore ולרשימה המקומית.
+     * מופעלת רק כשאוסף "listings" ריק לגמרי - מבטיחה שהאפליקציה תיראה מלאה בפתיחה ראשונה.
+     * תמונות הנכסים נטענות מ-Unsplash (שירות תמונות חינמי).
+     */
     private void seedMockDataIfCollectionEmpty() {
-        // Create 3 beautiful premium default cards so the app has content immediately
+        // יצירת 3 כרטיסי נכס לדוגמה: וילה, סטודיו ופנטהאוז
         List<HouseListing> mocks = new ArrayList<>();
         mocks.add(new HouseListing(
                 "mock1",
@@ -168,7 +210,7 @@ public class BrowseHousesActivity extends AppCompatActivity {
                 2, 2, true, true, true, true
         ));
 
-        // Insert mock data to Firestore to keep database alive, but also bind locally
+        // שמירת נכסי הדוגמה ל-Firestore ועדכון הרשימה המקומית
         for (HouseListing house : mocks) {
             db.collection("listings").document(house.getListingId()).set(house);
         }
@@ -178,17 +220,29 @@ public class BrowseHousesActivity extends AppCompatActivity {
         applyFilters();
     }
 
+    /**
+     * cleanManualListingsAndBookingsOnce - מנקה נכסים והזמנות ישנות מ-Firestore פעם אחת בלבד.
+     * משתמשת ב-SharedPreferences עם מפתח "db_cleaned_v6" כדוגל (flag) לזיהוי אם הניקוי כבר בוצע.
+     * אם לא בוצע - מוחקת את כל המסמכים מאוסף "listings" ו-"bookings",
+     * ולאחר מכן מפעילה את ה-callback (onComplete) לטעינת הנכסים הרשמיים.
+     * אם כבר בוצע - מפעילה את ה-callback ישירות ללא ניקוי.
+     *
+     * @param onComplete Runnable שיופעל לאחר השלמת הניקוי (או אם הניקוי כבר בוצע)
+     */
     private void cleanManualListingsAndBookingsOnce(Runnable onComplete) {
+        // SharedPreferences - אחסון מקומי פשוט ל-key-value pairs ב-Android
         android.content.SharedPreferences prefs = getSharedPreferences("app_prefs", MODE_PRIVATE);
         if (!prefs.getBoolean("db_cleaned_v6", false)) {
-            // Delete all listings so they are forced to re-seed with the new Unsplash URLs!
+            // מחיקת כל הנכסים ב-Firestore (אוסף "listings")
             db.collection("listings").get().addOnSuccessListener(queryDocumentSnapshots -> {
                 if (queryDocumentSnapshots.isEmpty()) {
+                    // אם כבר ריק - שמירת הדוגל ומעבר לטעינה
                     prefs.edit().putBoolean("db_cleaned_v6", true).apply();
                     onComplete.run();
                     return;
                 }
 
+                // מחיקת כל מסמכי הנכסים אחד אחד, ולאחר מחיקת האחרון - הפעלת callback
                 int total = queryDocumentSnapshots.size();
                 final int[] count = {0};
                 for (com.google.firebase.firestore.DocumentSnapshot doc : queryDocumentSnapshots) {
@@ -202,35 +256,47 @@ public class BrowseHousesActivity extends AppCompatActivity {
                 }
             }).addOnFailureListener(e -> onComplete.run());
 
-            // Delete all bookings
+            // מחיקת כל ההזמנות ב-Firestore (אוסף "bookings") - ניקוי מקביל ללא callback
             db.collection("bookings").get().addOnSuccessListener(queryDocumentSnapshots -> {
                 for (com.google.firebase.firestore.DocumentSnapshot doc : queryDocumentSnapshots) {
                     db.collection("bookings").document(doc.getId()).delete();
                 }
             });
         } else {
+            // הניקוי כבר בוצע בהפעלה קודמת - מעבר ישיר לטעינת נכסים
             onComplete.run();
         }
     }
 
+    /**
+     * applyFilters - מסננת את רשימת כל הנכסים לפי הפילטרים הנוכחיים:
+     * - currentSearchQuery: חיפוש טקסטואלי לפי כותרת או מיקום (case insensitive)
+     * - currentCategoryFilter: סינון לפי קטגוריה (All / Apartment / Villa וכו')
+     * מעבירה את הרשימה המסוננת ל-Adapter דרך filterList() שמציגה אותה ב-RecyclerView.
+     */
     private void applyFilters() {
         List<HouseListing> filtered = new ArrayList<>();
 
         for (HouseListing house : allListingsList) {
-            boolean matchesCategory = currentCategoryFilter.equals("All Properties") || 
+            // בדיקת התאמה לפי קטגוריה (equalsIgnoreCase - ללא תלות באותיות גדולות/קטנות)
+            boolean matchesCategory = currentCategoryFilter.equals("All Properties") ||
                                      house.getCategory().equalsIgnoreCase(currentCategoryFilter);
-            
-            boolean matchesSearch = currentSearchQuery.isEmpty() || 
-                                    house.getTitle().toLowerCase().contains(currentSearchQuery.toLowerCase()) || 
+
+            // בדיקת התאמה לפי טקסט חיפוש בכותרת ובמיקום
+            boolean matchesSearch = currentSearchQuery.isEmpty() ||
+                                    house.getTitle().toLowerCase().contains(currentSearchQuery.toLowerCase()) ||
                                     house.getLocation().toLowerCase().contains(currentSearchQuery.toLowerCase());
 
+            // הנכס נכלל ברשימה המסוננת רק אם עומד בשני הקריטריונים
             if (matchesCategory && matchesSearch) {
                 filtered.add(house);
             }
         }
 
+        // עדכון ה-Adapter עם הרשימה המסוננת
         adapter.filterList(filtered);
 
+        // הצגת מצב "ריק" אם אין תוצאות, אחרת הצגת ה-RecyclerView
         if (filtered.isEmpty()) {
             emptyStateContainer.setVisibility(View.VISIBLE);
             recyclerViewListings.setVisibility(View.GONE);

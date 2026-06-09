@@ -30,6 +30,18 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * BrouseHosesOrUploadListing - מסך הבית הראשי של האפליקציה (Dashboard).
+ * מוצג לאחר כניסה מוצלחת ומכיל שלוש לשוניות (Tabs) בסרגל ניווט תחתון:
+ *
+ * 1. Explore - מציג כרטיס מהיר למעבר למסך חיפוש הנכסים (BrowseHousesActivity).
+ * 2. Hosting - ניהול נכסים של המארח:
+ *    - STATE A: "Become a Host" - למי שטרם נרשם כמארח
+ *    - STATE B: Dashboard מארח - רשימת בקשות נכנסות, הזמנות מאושרות, ונכסים פעילים
+ * 3. Profile - פרטי משתמש, הזמנות מאושרות שלי (כשוכר), כפתורי Reminder ו-Logout.
+ *
+ * הטעינה מ-Firestore מתבצעת ב-onResume() כדי לרענן נתונים בכל חזרה למסך.
+ */
 public class BrouseHosesOrUploadListing extends AppCompatActivity {
 
     // Tab Contents
@@ -78,6 +90,12 @@ public class BrouseHosesOrUploadListing extends AppCompatActivity {
     private FirebaseFirestore db;
     
     // Permission request launcher for notification scheduling
+    /**
+     * requestPermissionLauncher - משגר ActivityResult לבקשת הרשאת התראות (POST_NOTIFICATIONS).
+     * נדרש ב-Android 13 (API 33, Tiramisu) ומעלה.
+     * אם ניתנה הרשאה - מפעיל את scheduleNotificationAlarm().
+     * זהו דרישת בגרות (Item 6) - שימוש ב-ActivityResult API החדש.
+     */
     private final androidx.activity.result.ActivityResultLauncher<String> requestPermissionLauncher = registerForActivityResult(
             new androidx.activity.result.contract.ActivityResultContracts.RequestPermission(),
             isGranted -> {
@@ -215,10 +233,19 @@ public class BrouseHosesOrUploadListing extends AppCompatActivity {
         });
     }
 
+    /**
+     * scheduleNotificationAlarm - מתזמנת התראה מקומית דרך AlarmManager.
+     * AlarmManager הוא שירות מערכת אנדרואיד לתזמון משימות בעתיד.
+     * יוצר PendingIntent שיפעיל את ReminderReceiver (BroadcastReceiver) לאחר 10 שניות.
+     * FLAG_IMMUTABLE - נדרש ב-Android 12 ומעלה לאבטחת PendingIntents.
+     * ELAPSED_REALTIME_WAKEUP - הטיימר מתחיל ממועד הדלקת המכשיר ומעיר אותו אם ישן.
+     * זהו דרישת בגרות (Item 6) - שימוש ב-AlarmManager ו-Notifications.
+     */
     private void scheduleNotificationAlarm() {
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         if (alarmManager != null) {
             Intent intent = new Intent(this, ReminderReceiver.class);
+            // PendingIntent עוטף Intent ומאפשר למערכת ההפעלה להפעיל אותו בעתיד
             PendingIntent pendingIntent = PendingIntent.getBroadcast(
                     this,
                     0,
@@ -226,17 +253,25 @@ public class BrouseHosesOrUploadListing extends AppCompatActivity {
                     PendingIntent.FLAG_UPDATE_CURRENT | (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ? PendingIntent.FLAG_IMMUTABLE : 0)
             );
 
-            long triggerTime = SystemClock.elapsedRealtime() + 10000; // 10 seconds from now
+            // הגדרת זמן ההפעלה: 10 שניות מהרגע הנוכחי
+            long triggerTime = SystemClock.elapsedRealtime() + 10000;
             alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, triggerTime, pendingIntent);
             
             Toast.makeText(this, "Reminder scheduled in 10 seconds! Close/exit the app to test notifications.", Toast.LENGTH_LONG).show();
         }
     }
 
+    /**
+     * onResume - נקרא בכל פעם שה-Activity חוזר לחזית (לדוגמה: חזרה מ-HouseDetailActivity).
+     * מרענן את כל רשימות הנתונים מ-Firestore כדי להציג מצב עדכני:
+     * - בדיקת סטטוס מארח ונכסיו
+     * - בקשות הזמנה נכנסות (PENDING)
+     * - הזמנות מאושרות (APPROVED) של האורחים
+     * - הזמנות מאושרות של המשתמש הנוכחי (כשוכר)
+     */
     @Override
     protected void onResume() {
         super.onResume();
-        // Dynamic reloads for real-time changes
         checkHostStatusAndLoad();
         loadHostBookingRequests();
         loadHostConfirmedReservations();
@@ -270,6 +305,14 @@ public class BrouseHosesOrUploadListing extends AppCompatActivity {
         }
     }
 
+    /**
+     * checkHostStatusAndLoad - בודקת אם המשתמש הנוכחי הוא מארח ומציגה את הממשק המתאים.
+     * שולחת שאילתה ל-Firestore לאוסף "listings" כדי לבדוק אם יש נכסים בבעלות המשתמש.
+     * - אם יש נכסים: מציגה את dashboard המארח עם הנכסים.
+     * - אם אין נכסים: בודקת את שדה isHost במסמך המשתמש ב-Firestore:
+     *   - אם isHost=true (הצטרף כמארח ידנית): מציגה dashboard מארח ריק.
+     *   - אם isHost=false/null: מציגה מסך "Become a Host".
+     */
     private void checkHostStatusAndLoad() {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser == null) return;
@@ -328,6 +371,12 @@ public class BrouseHosesOrUploadListing extends AppCompatActivity {
                 });
     }
 
+    /**
+     * loadMyBookings - טוענת את ההזמנות המאושרות של המשתמש הנוכחי (כשוכר).
+     * שואלת מ-Firestore את אוסף "bookings" לפי renterUid ו-status="APPROVED".
+     * מוצג בלשונית Profile תחת "My Bookings".
+     * מסרב להזמנות PENDING ו-DECLINED - מציגות רק הזמנות שאושרו.
+     */
     private void loadMyBookings() {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser == null) return;
@@ -364,6 +413,12 @@ public class BrouseHosesOrUploadListing extends AppCompatActivity {
                 });
     }
 
+    /**
+     * loadHostBookingRequests - טוענת את בקשות ההזמנה הממתינות לאישור המארח.
+     * שואלת מ-Firestore את אוסף "bookings" לפי hostUid ו-status="PENDING".
+     * מוצג בלשונית Hosting תחת "Incoming Requests".
+     * מעביר ל-BookingRequestAdapter callback שמרענן הנתונים לאחר אישור/דחייה.
+     */
     private void loadHostBookingRequests() {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser == null) return;
@@ -407,6 +462,12 @@ public class BrouseHosesOrUploadListing extends AppCompatActivity {
                 });
     }
 
+    /**
+     * loadHostConfirmedReservations - טוענת את ההזמנות המאושרות של אורחי המארח.
+     * שואלת מ-Firestore את אוסף "bookings" לפי hostUid ו-status="APPROVED".
+     * מוצג בלשונית Hosting תחת "Confirmed Reservations".
+     * מאפשר למארח לראות את רשימת כל האורחים שהוא אישר להם הזמנה.
+     */
     private void loadHostConfirmedReservations() {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser == null) return;
@@ -443,6 +504,13 @@ public class BrouseHosesOrUploadListing extends AppCompatActivity {
                 });
     }
 
+    /**
+     * selectTab - מחליפה את תוכן הלשונית הפעילה בסרגל הניווט התחתון.
+     * מסתירה את כל תכני הלשוניות ומציגה רק את זו שנבחרה.
+     * מעדכנת צבעים ועיצוב (צבע ראשי לפעיל, אפור לבלתי פעיל).
+     *
+     * @param tabName שם הלשונית שנבחרה: "explore" / "host" / "profile"
+     */
     private void selectTab(String tabName) {
         activeTab = tabName;
         

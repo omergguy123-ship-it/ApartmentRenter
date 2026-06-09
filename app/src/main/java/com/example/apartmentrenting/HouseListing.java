@@ -1,29 +1,59 @@
 package com.example.apartmentrenting;
 
+/**
+ * מחלקת מודל (Model) המייצגת מודעת נכס להשכרה (HouseListing) במערכת.
+ * כל נכס מכיל פרטים כגון כותרת, תיאור, מחיר, שירותים (Amenities), ומזהה המארח.
+ * המחלקה משמשת לשמירה ב-Cloud Firestore וגם לתצוגה ב-RecyclerView של רשימת הנכסים.
+ *
+ * Firestore ממפה את שמות השדות באופן אוטומטי לפי שמות הפונקציות get/set (camelCase).
+ */
 public class HouseListing {
+    // מזהה ייחודי של הנכס - נשמר נפרד מהמסמך ב-Firestore (מוגדר ידנית ב-setListingId)
     private String listingId;
+    // כותרת הנכס (לדוגמה: "Grand Oceanview Villa")
     private String title;
+    // תיאור מפורט של הנכס
     private String description;
+    // עיר/מיקום הנכס (לדוגמה: "Malibu, California")
     private String location;
+    // מחיר ללילה בדולרים
     private double price;
+    // URL של תמונת הנכס (Firebase Storage URL או Unsplash URL)
     private String imageUrl;
+    // UID של המארח (Firebase Auth UID) - משמש למניעת הזמנה עצמית
     private String hostUid;
+    // שם המארח לתצוגה (firstName + lastName)
     private String hostName;
+    // קטגוריה של הנכס: "Apartment" / "Villa" / "Cabin" / "Studio"
     private String category;
+    // דירוג הנכס (1.0 עד 5.0)
     private float rating;
+    // מספר חדרי שינה
     private int beds;
+    // מספר חדרי אמבטיה
     private int baths;
+    // האם יש Wi-Fi בנכס
     private boolean wifi;
+    // האם יש מיזוג אוויר בנכס
     private boolean ac;
+    // האם יש מטבח בנכס
     private boolean kitchen;
+    // האם יש חניה חינמית בנכס
     private boolean parking;
 
-    // Default constructor required for Firestore
+    /**
+     * בנאי ריק (No-arg constructor) - נדרש על ידי Firestore לבצע
+     * deserialization אוטומטי ממסמכי Firestore לאובייקטי Java.
+     */
     public HouseListing() {
     }
 
-    public HouseListing(String listingId, String title, String description, String location, double price, 
-                        String imageUrl, String hostUid, String hostName, String category, float rating, 
+    /**
+     * בנאי מלא ליצירת אובייקט HouseListing חדש עם כל הפרמטרים.
+     * נקרא ב-UploadHouseActivity ובפונקציית seedMockDataIfCollectionEmpty.
+     */
+    public HouseListing(String listingId, String title, String description, String location, double price,
+                        String imageUrl, String hostUid, String hostName, String category, float rating,
                         int beds, int baths, boolean wifi, boolean ac, boolean kitchen, boolean parking) {
         this.listingId = listingId;
         this.title = title;
@@ -42,6 +72,9 @@ public class HouseListing {
         this.kitchen = kitchen;
         this.parking = parking;
     }
+
+    // --- Getters ו-Setters ---
+    // נדרשים על ידי Firestore לקריאה וכתיבה של שדות האובייקט
 
     public String getListingId() {
         return listingId;

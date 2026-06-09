@@ -20,8 +20,17 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * BookingAdapter - מתאם (Adapter) עבור RecyclerView של הזמנות מאושרות של השוכר.
+ * מוצג בלשונית "Profile" ב-BrouseHosesOrUploadListing תחת "My Bookings".
+ *
+ * מציג רק הזמנות בסטטוס "APPROVED" (אושרו על ידי המארח).
+ * בלחיצה על הזמנה - שולף את פרטי הנכס העדכניים מ-Firestore ומנווט ל-HouseDetailActivity.
+ */
 public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.BookingViewHolder> {
+    // context - ה-Context של ה-Activity שמשתמשת ב-Adapter
     private Context context;
+    // bookingList - רשימת ההזמנות המאושרות של המשתמש המחובר
     private List<Booking> bookingList;
 
     public BookingAdapter(Context context, List<Booking> bookingList) {
@@ -29,6 +38,9 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.BookingV
         this.bookingList = bookingList;
     }
 
+    /**
+     * onCreateViewHolder - מנפח (inflate) את קובץ item_booking.xml ויוצר ViewHolder חדש.
+     */
     @NonNull
     @Override
     public BookingViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -36,6 +48,14 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.BookingV
         return new BookingViewHolder(view);
     }
 
+    /**
+     * onBindViewHolder - מאכלס את נתוני ההזמנה לתוך הכרטיס.
+     * ממיר חותמת זמן Unix לפורמט קריא למשתמש (לדוגמה: "Jun 12, 2026").
+     * בלחיצה - שולף נתוני נכס מ-Firestore ומנווט לפרטי הנכס.
+     *
+     * @param holder   ה-ViewHolder שמחזיק את הרכיבים הגרפיים של כרטיס ההזמנה
+     * @param position מיקום הפריט ברשימה
+     */
     @Override
     public void onBindViewHolder(@NonNull BookingViewHolder holder, int position) {
         Booking booking = bookingList.get(position);
@@ -44,13 +64,13 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.BookingV
         holder.bookingLocation.setText(booking.getLocation());
         holder.bookingPrice.setText(String.format("$%.0f", booking.getPrice()));
 
-        // Format Date
+        // המרת חותמת זמן Unix (milliseconds) לפורמט קריא בעזרת Calendar ו-DateFormat
         Calendar cal = Calendar.getInstance(Locale.ENGLISH);
         cal.setTimeInMillis(booking.getBookingDate());
         String date = DateFormat.format("MMM d, yyyy", cal).toString();
         holder.bookingDateText.setText("Booked on: " + date);
 
-        // Load Thumbnail Image
+        // טעינת תמונת הנכס בעזרת ספריית Glide - ניהול אסינכרוני של טעינת תמונות מהרשת
         if (booking.getImageUrl() != null && !booking.getImageUrl().isEmpty()) {
             Glide.with(context)
                     .load(booking.getImageUrl())
@@ -61,12 +81,15 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.BookingV
             holder.bookingImage.setImageResource(R.drawable.image);
         }
 
-        // On Click -> Fetch fresh listing from Firestore and navigate to detail page
+        // בלחיצה על כרטיס ההזמנה - שאילתת Firestore לטעינת פרטי הנכס העדכניים,
+        // ולאחר מכן מעבר ל-HouseDetailActivity עם הנתונים בתוך Intent Extras.
         holder.itemView.setOnClickListener(v -> {
             Toast.makeText(context, "Opening listing details...", Toast.LENGTH_SHORT).show();
+            // שאילתה מ-Firestore לאוסף "listings" לפי ה-listingId של ההזמנה
             FirebaseFirestore.getInstance().collection("listings").document(booking.getListingId()).get()
                     .addOnSuccessListener(documentSnapshot -> {
                         if (documentSnapshot.exists()) {
+                            // המרת מסמך Firestore לאובייקט HouseListing עם toObject()
                             HouseListing listing = documentSnapshot.toObject(HouseListing.class);
                             if (listing != null) {
                                 listing.setListingId(documentSnapshot.getId());
@@ -102,12 +125,17 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.BookingV
         return bookingList.size();
     }
 
+    /**
+     * BookingViewHolder - מחלקה פנימית המחזיקה רפרנסים לרכיבי ה-UI של כרטיס ההזמנה.
+     * דפוס ViewHolder מונע קריאות חוזרות ל-findViewById ומשפר ביצועי גלילה.
+     */
     public static class BookingViewHolder extends RecyclerView.ViewHolder {
         ImageView bookingImage;
         TextView bookingTitle, bookingLocation, bookingDateText, bookingPrice;
 
         public BookingViewHolder(@NonNull View itemView) {
             super(itemView);
+            // קישור רכיבי ה-UI מ-item_booking.xml
             bookingImage = itemView.findViewById(R.id.bookingImage);
             bookingTitle = itemView.findViewById(R.id.bookingTitle);
             bookingLocation = itemView.findViewById(R.id.bookingLocation);
